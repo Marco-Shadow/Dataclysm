@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://csa5wg3bw580j"]
+[gd_scene load_steps=25 format=3 uid="uid://csa5wg3bw580j"]
 
 [ext_resource type="Script" uid="uid://s4ofddboap7r" path="res://scripts/player.gd" id="1_ghh78"]
 [ext_resource type="Texture2D" uid="uid://41bdqf1ld3qk" path="res://assets/skins/adventurer.png" id="2_a8ls1"]
@@ -116,6 +116,8 @@ animations = [{
 "speed": 10.0
 }]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qfm1y"]
+
 [node name="player" type="CharacterBody2D"]
 floor_snap_length = 16.0
 script = ExtResource("1_ghh78")
@@ -123,9 +125,9 @@ script = ExtResource("1_ghh78")
 [node name="PlayerLabel" type="Label" parent="."]
 modulate = Color(1, 1, 1, 0.501961)
 offset_left = -47.0
-offset_top = -52.0
+offset_top = -61.0
 offset_right = 329.0
-offset_bottom = 12.0
+offset_bottom = 3.0
 scale = Vector2(0.25, 0.25)
 text = "Player"
 label_settings = SubResource("LabelSettings_fulsm")
@@ -140,8 +142,8 @@ animation = &"player"
 shape = SubResource("CapsuleShape2D_rhi1g")
 
 [node name="Health" type="Sprite2D" parent="."]
-position = Vector2(-17, -34)
-scale = Vector2(0.135, 4)
+position = Vector2(-18, -43)
+scale = Vector2(0.13671875, 4)
 texture = SubResource("GradientTexture1D_qhqgy")
 centered = false
 
@@ -150,3 +152,14 @@ sprite_frames = SubResource("SpriteFrames_g2els")
 animation = &"explode"
 frame = 10
 frame_progress = 1.0
+
+[node name="FuelBar" type="ProgressBar" parent="."]
+modulate = Color(6.346868, 0, 0.34529632, 1)
+offset_left = -18.0
+offset_top = -39.0
+offset_right = 17.0
+offset_bottom = -35.0
+theme_override_styles/fill = SubResource("StyleBoxFlat_qfm1y")
+max_value = 1.0
+value = 1.0
+show_percentage = false
