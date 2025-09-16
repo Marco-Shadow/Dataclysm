@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Dataclysm"
 run/main_scene="res://scenes/mainMenu.tscn"
-config/features=PackedStringArray("4.5", "GL Compatibility")
+config/features=PackedStringArray("4.4", "GL Compatibility")
 boot_splash/bg_color=Color(0.458824, 0.309804, 0.643137, 1)
 boot_splash/image="uid://c1kpg0yoddepy"
 config/icon="res://assets/D.png"
