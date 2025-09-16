@@ -258,11 +258,12 @@ func _physics_process(delta: float) -> void:
 	# No need to update trajectory when player flips anymore
 	
 	if direction != 0:
-		velocity.x = move_toward(velocity.x, direction * SPEED, SPEED * delta)
+		velocity.x = direction * SPEED
 	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED * delta)
-	
+		velocity.x = 0
+
 	move_and_slide()
+
 
 func is_my_turn() -> bool:
 	return TurnManager.current_player_id == player_id
