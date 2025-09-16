@@ -1,0 +1,157 @@
+[gd_scene load_steps=19 format=3 uid="uid://b4kdm3lq2kp7a"]
+
+[ext_resource type="Script" uid="uid://c766itvglhs1m" path="res://scripts/projectile.gd" id="1_qg27n"]
+[ext_resource type="Texture2D" uid="uid://bh4mv4cbse3y" path="res://assets/projectiles/controller.png" id="2_6c2e5"]
+[ext_resource type="Texture2D" uid="uid://bew8k4tvun1i2" path="res://assets/projectiles/cd.png" id="2_fooc5"]
+[ext_resource type="Texture2D" uid="uid://c4v5n5wg4783h" path="res://assets/projectiles/headphones.png" id="3_pl1gp"]
+[ext_resource type="Texture2D" uid="uid://b8vsmskqpmcfx" path="res://assets/projectiles/mic.png" id="4_ejmht"]
+[ext_resource type="Texture2D" uid="uid://t7yc45c2yklj" path="res://assets/projectiles/joystick.png" id="4_l47rv"]
+[ext_resource type="Texture2D" uid="uid://4xy0502b7l58" path="res://assets/projectiles/keyboard.png" id="4_xo60o"]
+[ext_resource type="Texture2D" uid="uid://bt4vdguf8gvga" path="res://assets/projectiles/ram.png" id="5_031o2"]
+[ext_resource type="Texture2D" uid="uid://dc144vqyt72p4" path="res://assets/projectiles/laptop.png" id="5_mxgir"]
+[ext_resource type="Texture2D" uid="uid://cmetg7uu36qjc" path="res://assets/projectiles/mainboard.png" id="6_rimnf"]
+[ext_resource type="Texture2D" uid="uid://sdwf43p65qb3" path="res://assets/projectiles/rtx.png" id="6_xo60o"]
+[ext_resource type="Texture2D" uid="uid://8wc0k5kqvvld" path="res://assets/projectiles/smartphone.png" id="7_mxgir"]
+[ext_resource type="Texture2D" uid="uid://d0q61nb27xbpy" path="res://assets/projectiles/monitor.png" id="8_fooc5"]
+[ext_resource type="Texture2D" uid="uid://c52ohv22c667t" path="res://assets/projectiles/mouse.png" id="8_l47rv"]
+[ext_resource type="Texture2D" uid="uid://o52aa3jyxmtl" path="res://assets/projectiles/usb.png" id="8_rimnf"]
+[ext_resource type="Texture2D" uid="uid://doprfcqr1h8g" path="res://assets/projectiles/pc.png" id="10_sbbd4"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_586ad"]
+radius = 25.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fy6nk"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_fooc5")
+}],
+"loop": true,
+"name": &"cd",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_6c2e5")
+}],
+"loop": false,
+"name": &"controller",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_pl1gp")
+}],
+"loop": true,
+"name": &"headphones",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_l47rv")
+}],
+"loop": true,
+"name": &"joystick",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_xo60o")
+}],
+"loop": true,
+"name": &"keyboard",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_mxgir")
+}],
+"loop": true,
+"name": &"laptop",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_rimnf")
+}],
+"loop": true,
+"name": &"mainboard",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_ejmht")
+}],
+"loop": true,
+"name": &"mic",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_fooc5")
+}],
+"loop": true,
+"name": &"monitor",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_l47rv")
+}],
+"loop": true,
+"name": &"mouse",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_sbbd4")
+}],
+"loop": true,
+"name": &"pc",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_031o2")
+}],
+"loop": true,
+"name": &"ram",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_xo60o")
+}],
+"loop": true,
+"name": &"rtx",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_mxgir")
+}],
+"loop": true,
+"name": &"smartphone",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_rimnf")
+}],
+"loop": true,
+"name": &"usb",
+"speed": 5.0
+}]
+
+[node name="Projectile" type="Area2D"]
+script = ExtResource("1_qg27n")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_586ad")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.09375, 0.0937501)
+sprite_frames = SubResource("SpriteFrames_fy6nk")
+animation = &"cd"
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

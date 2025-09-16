@@ -1,0 +1,1 @@
+A tech-themed artillery game where players take turns launching computer components at opponents across destructible terrain. Aim carefully, manage your jetpack fuel, and master physics-based projectiles to be the last techie standing in this modern tribute to classics like Worms.

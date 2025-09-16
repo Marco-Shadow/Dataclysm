@@ -1,0 +1,108 @@
+[gd_scene load_steps=7 format=3 uid="uid://cik6rhkbsy6q0"]
+
+[ext_resource type="Script" path="res://scripts/options.gd" id="1_sjipf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yxfgl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xtjef"]
+bg_color = Color(0.822303, 0.798634, 0.798634, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_size = 5
+shadow_offset = Vector2(0.1, 3.405)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n7iql"]
+bg_color = Color(0.650128, 0.650128, 0.650127, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_size = 5
+shadow_offset = Vector2(0.1, 3.405)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kynsg"]
+bg_color = Color(0.969137, 0.969137, 0.969137, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_size = 5
+shadow_offset = Vector2(0.1, 3.405)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k1j15"]
+
+[node name="Options" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_sjipf")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.129412, 0.129412, 0.129412, 0.294118)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -200.0
+offset_right = 350.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Options"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="DisplayLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Display Settings"
+
+[node name="FullscreenToggle" type="CheckButton" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+button_pressed = true
+text = "Fullscreen"
+
+[node name="Spacer" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BackButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yxfgl")
+theme_override_styles/hover = SubResource("StyleBoxFlat_xtjef")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_n7iql")
+theme_override_styles/normal = SubResource("StyleBoxFlat_kynsg")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_k1j15")
+text = "    Back to Main Menu    "
+
+[connection signal="pressed" from="VBoxContainer/BackButton" to="." method="_on_back_pressed"]

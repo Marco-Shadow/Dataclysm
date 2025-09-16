@@ -1,0 +1,152 @@
+[gd_scene load_steps=24 format=3 uid="uid://csa5wg3bw580j"]
+
+[ext_resource type="Script" uid="uid://s4ofddboap7r" path="res://scripts/player.gd" id="1_ghh78"]
+[ext_resource type="Texture2D" uid="uid://41bdqf1ld3qk" path="res://assets/skins/adventurer.png" id="2_a8ls1"]
+[ext_resource type="FontFile" uid="uid://14ep6x8xdivm" path="res://assets/AudioNugget.ttf" id="2_qfm1y"]
+[ext_resource type="Texture2D" uid="uid://b06eiya6sfom4" path="res://assets/empty.png" id="3_3v2ag"]
+[ext_resource type="Texture2D" uid="uid://b0j5j5mnb05gl" path="res://assets/Sonic explosion/sonicExplosion00.png" id="3_d2wvv"]
+[ext_resource type="Texture2D" uid="uid://dps4xia42q5ad" path="res://assets/skins/female.png" id="3_qfm1y"]
+[ext_resource type="Texture2D" uid="uid://craw52ub3xfww" path="res://assets/Sonic explosion/sonicExplosion01.png" id="4_3v2ag"]
+[ext_resource type="Texture2D" uid="uid://dki3o2aqxqie3" path="res://assets/skins/player.png" id="4_fulsm"]
+[ext_resource type="Texture2D" uid="uid://cw4ygl6tlcmdp" path="res://assets/skins/soldier.png" id="5_4r5pv"]
+[ext_resource type="Texture2D" uid="uid://f0kvgqfjioeg" path="res://assets/Sonic explosion/sonicExplosion02.png" id="5_jej6c"]
+[ext_resource type="Texture2D" uid="uid://cox1ixv8yxdfd" path="res://assets/skins/zombie.png" id="6_60mlk"]
+[ext_resource type="Texture2D" uid="uid://bkul5vhxl8l5u" path="res://assets/Sonic explosion/sonicExplosion03.png" id="6_f1ej7"]
+[ext_resource type="Texture2D" uid="uid://c43tdccfhvypd" path="res://assets/Sonic explosion/sonicExplosion04.png" id="7_oprun"]
+[ext_resource type="Texture2D" uid="uid://ci8fjalbjdik2" path="res://assets/Sonic explosion/sonicExplosion05.png" id="8_a8ls1"]
+[ext_resource type="Texture2D" uid="uid://5i7dhd1jdlrc" path="res://assets/Sonic explosion/sonicExplosion06.png" id="9_qfm1y"]
+[ext_resource type="Texture2D" uid="uid://drhrs0xqvg7oi" path="res://assets/Sonic explosion/sonicExplosion07.png" id="10_fulsm"]
+[ext_resource type="Texture2D" uid="uid://ds58hytxietfx" path="res://assets/Sonic explosion/sonicExplosion08.png" id="11_4r5pv"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_fulsm"]
+font = ExtResource("2_qfm1y")
+font_size = 64
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_deru5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_a8ls1")
+}],
+"loop": true,
+"name": &"adventurer",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_qfm1y")
+}],
+"loop": true,
+"name": &"female",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_fulsm")
+}],
+"loop": true,
+"name": &"player",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_4r5pv")
+}],
+"loop": true,
+"name": &"soldier",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_60mlk")
+}],
+"loop": true,
+"name": &"zombie",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rhi1g"]
+radius = 19.0
+height = 56.0
+
+[sub_resource type="Gradient" id="Gradient_g2els"]
+colors = PackedColorArray(0, 1, 0, 1, 4.62055e-06, 0.988582, 0.678713, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_qhqgy"]
+gradient = SubResource("Gradient_g2els")
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_g2els"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_3v2ag")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_d2wvv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_3v2ag")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_jej6c")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_f1ej7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_oprun")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_a8ls1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_qfm1y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_fulsm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_4r5pv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_3v2ag")
+}],
+"loop": false,
+"name": &"explode",
+"speed": 10.0
+}]
+
+[node name="player" type="CharacterBody2D"]
+floor_snap_length = 16.0
+script = ExtResource("1_ghh78")
+
+[node name="PlayerLabel" type="Label" parent="."]
+modulate = Color(1, 1, 1, 0.501961)
+offset_left = -47.0
+offset_top = -52.0
+offset_right = 329.0
+offset_bottom = 12.0
+scale = Vector2(0.25, 0.25)
+text = "Player"
+label_settings = SubResource("LabelSettings_fulsm")
+horizontal_alignment = 1
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.0332031, 0.0332031)
+sprite_frames = SubResource("SpriteFrames_deru5")
+animation = &"player"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_rhi1g")
+
+[node name="Health" type="Sprite2D" parent="."]
+position = Vector2(-17, -34)
+scale = Vector2(0.135, 4)
+texture = SubResource("GradientTexture1D_qhqgy")
+centered = false
+
+[node name="DeathAnimationSprite" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_g2els")
+animation = &"explode"
+frame = 10
+frame_progress = 1.0

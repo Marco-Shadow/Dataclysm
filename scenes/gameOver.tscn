@@ -1,0 +1,148 @@
+[gd_scene load_steps=10 format=3 uid="uid://cpxse7ufn00d"]
+
+[ext_resource type="Script" uid="uid://deol3e48sk3sv" path="res://scripts/gameOverScreen.gd" id="1_d1w46"]
+[ext_resource type="FontFile" uid="uid://14ep6x8xdivm" path="res://assets/AudioNugget.ttf" id="1_gob2e"]
+[ext_resource type="Script" uid="uid://y1v0be77dhwp" path="res://scripts/gameOverButtons.gd" id="2_gob2e"]
+[ext_resource type="Texture2D" uid="uid://b5xw05eweykof" path="res://assets/DataclysmInText.png" id="3_twys0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h70hp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0tj4m"]
+bg_color = Color(0.822303, 0.798634, 0.798634, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_size = 5
+shadow_offset = Vector2(0.1, 3.405)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cifys"]
+bg_color = Color(0.650128, 0.650128, 0.650127, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_size = 5
+shadow_offset = Vector2(0.1, 3.405)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a7hqt"]
+bg_color = Color(0.969137, 0.969137, 0.969137, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_size = 5
+shadow_offset = Vector2(0.1, 3.405)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_rw0xb"]
+texture = ExtResource("3_twys0")
+
+[node name="GameOver" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_d1w46")
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(0, 400)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -216.0
+offset_top = -68.0
+offset_right = 221.0
+offset_bottom = 199.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+alignment = 1
+metadata/_edit_lock_ = true
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_gob2e")
+theme_override_font_sizes/font_size = 100
+text = "Game Over"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="WinnerLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_gob2e")
+theme_override_font_sizes/font_size = 100
+text = "Game Over"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button3" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/focus = SubResource("StyleBoxEmpty_h70hp")
+theme_override_styles/hover = SubResource("StyleBoxFlat_0tj4m")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_cifys")
+theme_override_styles/normal = SubResource("StyleBoxFlat_a7hqt")
+text = "Restart"
+script = ExtResource("2_gob2e")
+metadata/_edit_lock_ = true
+
+[node name="Button4" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/focus = SubResource("StyleBoxEmpty_h70hp")
+theme_override_styles/hover = SubResource("StyleBoxFlat_0tj4m")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_cifys")
+theme_override_styles/normal = SubResource("StyleBoxFlat_a7hqt")
+text = "Main Menu"
+script = ExtResource("2_gob2e")
+metadata/_edit_lock_ = true
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.506944
+anchor_top = 0.0601852
+anchor_right = 0.506944
+anchor_bottom = 0.0617284
+offset_left = -432.0
+offset_right = 432.0
+offset_bottom = 83.0
+grow_horizontal = 2
+rotation = 0.00237271
+theme_override_styles/normal = SubResource("StyleBoxTexture_rw0xb")
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="ProfilePicture" type="Button" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -112.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 112.0
+grow_horizontal = 0
+text = "Profilbild"
+
+[connection signal="pressed" from="VBoxContainer/Button3" to="VBoxContainer/Button3" method="_on_pressed_Restart"]
+[connection signal="pressed" from="VBoxContainer/Button4" to="VBoxContainer/Button4" method="_on_pressed_MainMenu"]

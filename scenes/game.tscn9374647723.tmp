@@ -1,0 +1,330 @@
+[gd_scene load_steps=30 format=3 uid="uid://dtwxdvapltg42"]
+
+[ext_resource type="PackedScene" uid="uid://csa5wg3bw580j" path="res://scenes/player.tscn" id="1_oxd0a"]
+[ext_resource type="Script" uid="uid://7yc6qyhcfmx5" path="res://scripts/world.gd" id="2_2shgi"]
+[ext_resource type="Script" uid="uid://brtfjk2e0ods7" path="res://scripts/turnmanager.gd" id="2_a5mmx"]
+[ext_resource type="Texture2D" uid="uid://ca5n4on7l32uc" path="res://assets/Double/keyboard_a_outline.png" id="4_lbhrr"]
+[ext_resource type="Texture2D" uid="uid://c31jthhvejtul" path="res://assets/Double/keyboard_w_outline.png" id="4_u5sy4"]
+[ext_resource type="Script" uid="uid://jf8iirfqjcm2" path="res://scripts/Keyboard_Overlay.gd" id="4_vtaks"]
+[ext_resource type="Texture2D" uid="uid://bqrl0atifsjk5" path="res://assets/Double/keyboard_s_outline.png" id="5_gee14"]
+[ext_resource type="Texture2D" uid="uid://bg8hlr45y6ksa" path="res://assets/Double/keyboard_d_outline.png" id="6_0tnpc"]
+[ext_resource type="Texture2D" uid="uid://bi5yj37g21ab1" path="res://assets/Double/keyboard_s.png" id="6_kvpfn"]
+[ext_resource type="Texture2D" uid="uid://bw4mkupmyyusg" path="res://assets/Double/keyboard_d.png" id="8_dinhu"]
+[ext_resource type="Texture2D" uid="uid://cubcldrko2127" path="res://assets/Double/keyboard_a.png" id="9_dinhu"]
+[ext_resource type="Texture2D" uid="uid://bhshvw14hkayp" path="res://assets/Double/keyboard_w.png" id="12_kvuet"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_u8gkx"]
+distance = -26.3102
+
+[sub_resource type="Animation" id="Animation_kvuet"]
+resource_name = "s_pressed"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [ExtResource("5_gee14"), ExtResource("6_kvpfn")]
+}
+
+[sub_resource type="Animation" id="Animation_trtic"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("5_gee14")]
+}
+
+[sub_resource type="Animation" id="Animation_ir15t"]
+resource_name = "s_released"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [ExtResource("6_kvpfn"), ExtResource("5_gee14")]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ca42v"]
+_data = {
+&"RESET": SubResource("Animation_trtic"),
+&"s_pressed": SubResource("Animation_kvuet"),
+&"s_released": SubResource("Animation_ir15t")
+}
+
+[sub_resource type="Animation" id="Animation_rysoc"]
+resource_name = "d_released"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [ExtResource("8_dinhu"), ExtResource("6_0tnpc")]
+}
+
+[sub_resource type="Animation" id="Animation_ssvqc"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("6_0tnpc")]
+}
+
+[sub_resource type="Animation" id="Animation_264po"]
+resource_name = "d_pressed"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [ExtResource("6_0tnpc"), ExtResource("8_dinhu")]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1kice"]
+_data = {
+&"RESET": SubResource("Animation_ssvqc"),
+&"d_pressed": SubResource("Animation_264po"),
+&"d_released": SubResource("Animation_rysoc")
+}
+
+[sub_resource type="Animation" id="Animation_ca42v"]
+length = 0.001
+
+[sub_resource type="Animation" id="Animation_1kice"]
+resource_name = "d_pressed"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [ExtResource("4_lbhrr"), ExtResource("9_dinhu")]
+}
+
+[sub_resource type="Animation" id="Animation_5newe"]
+resource_name = "d_released"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [ExtResource("9_dinhu"), ExtResource("4_lbhrr")]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_37s47"]
+_data = {
+&"RESET": SubResource("Animation_ca42v"),
+&"a_pressed": SubResource("Animation_1kice"),
+&"a_released": SubResource("Animation_5newe")
+}
+
+[sub_resource type="Animation" id="Animation_bt5mj"]
+resource_name = "w_released"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [ExtResource("12_kvuet"), ExtResource("4_u5sy4")]
+}
+
+[sub_resource type="Animation" id="Animation_e1j6l"]
+resource_name = "w_pressed"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [ExtResource("4_u5sy4"), ExtResource("12_kvuet")]
+}
+
+[sub_resource type="Animation" id="Animation_pl11u"]
+length = 0.001
+step = 0.0333
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("4_u5sy4")]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bhx41"]
+_data = {
+&"RESET": SubResource("Animation_pl11u"),
+&"w_pressed": SubResource("Animation_e1j6l"),
+&"w_released": SubResource("Animation_bt5mj")
+}
+
+[node name="Game" type="Node2D"]
+
+[node name="TurnManager" type="Node" parent="." node_paths=PackedStringArray("game", "world", "camera")]
+script = ExtResource("2_a5mmx")
+game = NodePath("..")
+world = NodePath("../world")
+player_scene = ExtResource("1_oxd0a")
+camera = NodePath("../Camera2D")
+kill_area_path = NodePath("../KillArea")
+
+[node name="world" type="Node2D" parent="."]
+position = Vector2(-576, -324)
+script = ExtResource("2_2shgi")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(-541, -8)
+rotation = 1.5708
+shape = SubResource("WorldBoundaryShape2D_u8gkx")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, -289)
+rotation = 3.14159
+shape = SubResource("WorldBoundaryShape2D_u8gkx")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(541, 0)
+rotation = -1.5708
+shape = SubResource("WorldBoundaryShape2D_u8gkx")
+
+[node name="KillArea" type="Area2D" parent="."]
+unique_name_in_owner = true
+
+[node name="KillShape" type="CollisionShape2D" parent="KillArea"]
+position = Vector2(0, 289)
+scale = Vector2(1.49818, 1.33028)
+shape = SubResource("WorldBoundaryShape2D_u8gkx")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("4_vtaks")
+
+[node name="Keyboard_S" type="TextureRect" parent="CanvasLayer/Control"]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 52.0
+offset_right = 208.0
+offset_bottom = 180.0
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("5_gee14")
+script = ExtResource("4_vtaks")
+
+[node name="SKeyAnimation" type="AnimationPlayer" parent="CanvasLayer/Control/Keyboard_S"]
+libraries = {
+&"": SubResource("AnimationLibrary_ca42v")
+}
+
+[node name="Keyboard_D" type="TextureRect" parent="CanvasLayer/Control"]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 2.95
+anchor_top = 1.3
+anchor_right = 2.95
+anchor_bottom = 1.3
+offset_left = 2.0
+offset_right = 130.0
+offset_bottom = 128.0
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("6_0tnpc")
+script = ExtResource("4_vtaks")
+metadata/_edit_use_anchors_ = true
+
+[node name="DKeyAnimation" type="AnimationPlayer" parent="CanvasLayer/Control/Keyboard_D"]
+libraries = {
+&"": SubResource("AnimationLibrary_1kice")
+}
+
+[node name="Keyboard_A" type="TextureRect" parent="CanvasLayer/Control"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 52.0
+offset_right = 168.0
+offset_bottom = 180.0
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("4_lbhrr")
+script = ExtResource("4_vtaks")
+
+[node name="AKeyAnimation" type="AnimationPlayer" parent="CanvasLayer/Control/Keyboard_A"]
+libraries = {
+&"": SubResource("AnimationLibrary_37s47")
+}
+
+[node name="Keyboard_W" type="TextureRect" parent="CanvasLayer/Control"]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 12.0
+offset_right = 208.0
+offset_bottom = 140.0
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("4_u5sy4")
+script = ExtResource("4_vtaks")
+
+[node name="WKeyAnimation" type="AnimationPlayer" parent="CanvasLayer/Control/Keyboard_W"]
+libraries = {
+&"": SubResource("AnimationLibrary_bhx41")
+}
