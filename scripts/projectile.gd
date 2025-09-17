@@ -110,6 +110,7 @@ func _on_body_entered(body: Node) -> void:
 	
 	if body.is_in_group("Players"):
 		var player_id = body.player_id
+
 		var player = TurnManager.get_player(player_id)
 		if player:
 			var damage_amount = calculate_damage()
