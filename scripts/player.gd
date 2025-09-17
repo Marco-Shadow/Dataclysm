@@ -36,6 +36,13 @@ var max_power = 1.0
 var power_charge_rate = 1.0
 var projectile_offset = Vector2()
 
+# variables for weapons from global list 
+var available_weapons: Array = []
+var current_weapon_index: int = 0
+
+# Variable for hud reference for weapon 
+@onready var hud: CanvasLayer = get_tree().current_scene.get_node("HUD")
+
 func _ready() -> void:
 	sprite = get_node("AnimatedSprite2D")
 	deathSprite = get_node("DeathAnimationSprite")
@@ -43,6 +50,10 @@ func _ready() -> void:
 	labelObj = get_node("PlayerLabel")
 	
 	labelObj.text = "Player " + str(player_id )
+	# Load weaponlist
+	available_weapons = GlobalSettings.available_weapons
+	_update_weapon_display()
+	
 	
 	# Select a random animation for the projectile
 	if sprite and sprite is AnimatedSprite2D:
@@ -274,39 +285,56 @@ func is_my_turn() -> bool:
 
 # This is now the internal implementation that actually creates the projectile
 func do_shoot() -> void:
-	if shoot_cooldown > 0:
+	if shoot_cooldown > 0 or dead:
 		return
 		
-	if dead:
-		return
-	
 	# Calculate force
 	var actual_force = MIN_SHOOT_FORCE + (MAX_SHOOT_FORCE - MIN_SHOOT_FORCE) * power_level
 	
-	print("Player " + str(player_id) + " creating projectile with force " + str(actual_force))
-	var proj_scene = preload("uid://b4kdm3lq2kp7a")
-	var projectile = proj_scene.instantiate()
+	# Aktuelle Waffe holen
+	var weapon = available_weapons[current_weapon_index]
 	
+	print("Player " + str(player_id) + " creating projectile with force " + str(actual_force) + "with weapon: " + weapon["name"])
+	#var proj_scene = preload("uid://b4kdm3lq2kp7a")
+	#var projectile = proj_scene.instantiate()
+	
+	var projectile_scene = preload("res://scenes/projectile.tscn")
+	var projectile = projectile_scene.instantiate()
+	
+	# set shooter infos settings
 	projectile.shooter_id = player_id
 	projectile.shooter_node = self
-
 	
-	projectile.shooter_id = player_id
+	projectile.terrain_node = terrain_node
+	
+	
+	# Werte der Waffe ins Projektil übertragen
+	projectile.weapon_name = weapon["name"];
+	projectile.min_damage = weapon["min_damage"]
+	projectile.max_damage = weapon["max_damage"]
+	projectile.initial_speed = weapon["initial_speed"]
+	projectile.gravity = weapon["gravity"]
 	
 	# Use the same offset as in trajectory calculation
 	projectile.position = global_position + projectile_offset
 	
-	# Calculate direction
+	# Richtung berechnen
 	var angle_rad = deg_to_rad(shoot_angle)
-	# Always use the same direction calculation regardless of player flip
 	var direction = Vector2.RIGHT.rotated(angle_rad)
-	
-	# Apply initial velocity
 	projectile.linear_velocity = direction * actual_force
 	projectile.direction = direction.normalized()
-	projectile.terrain_node = terrain_node 
-	projectile.shooter_id = player_id
-	projectile.shooter_node = self
+	
+	# Calculate direction auskommentiert drunter 
+	# var angle_rad = deg_to_rad(shoot_angle)
+	# Always use the same direction calculation regardless of player flip auskommentiert drunter
+	# var direction = Vector2.RIGHT.rotated(angle_rad)
+	
+	# Apply initial velocity wurde auskommentiert
+	# projectile.linear_velocity = direction * actual_force
+	#projectile.direction = direction.normalized()
+	#projectile.terrain_node = terrain_node 
+	#projectile.shooter_id = player_id
+	#projectile.shooter_node = self
 
 	
 	# Add projectile to scene
@@ -321,8 +349,51 @@ func do_shoot() -> void:
 	# Switch turns
 	TurnManager.switch_turn()
 
+# weapon functions
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("weapon_next"):
+		_select_next_weapon()
+	elif event.is_action_pressed("weapon_prev"):
+		_select_previous_weapon()
+
+# Waffenwechsel zuständige Funktionen
+func _select_next_weapon() -> void:
+	current_weapon_index += 1
+	if current_weapon_index >= available_weapons.size():
+		current_weapon_index = 0
+	_update_weapon_display()
+
+
+func _select_previous_weapon() -> void:
+	current_weapon_index -= 1
+	if current_weapon_index < 0:
+		current_weapon_index = available_weapons.size() - 1
+	_update_weapon_display()
+
+
+func _update_weapon_display() -> void:
+	# Aktuelle Waffe holen
+	var weapon = available_weapons[current_weapon_index]
+	# HUD aktualisieren
+	hud.update_weapon(weapon["name"], weapon["icon"])
+
+
 # Public function that the turn manager can call
 func shoot_projectile() -> void:
 	# This function is kept for compatibility but now does nothing
 	# The shooting is fully handled by the player's input logic
-	pass
+	var weapon = available_weapons[current_weapon_index]
+
+	# Projektil-Szene laden
+	var projectile_scene = preload("res://scenes/projectile.tscn")
+	var projectile = projectile_scene.instantiate()
+
+	# Werte der aktuellen Waffe ins Projektil übertragen
+	projectile.min_damage = weapon["min_damage"]
+	projectile.max_damage = weapon["max_damage"]
+	projectile.initial_speed = weapon["initial_speed"]
+	projectile.gravity = weapon["gravity"]
+
+	# Projektil in die Szene einfügen
+	get_tree().current_scene.add_child(projectile)
+	projectile.global_position = global_position
