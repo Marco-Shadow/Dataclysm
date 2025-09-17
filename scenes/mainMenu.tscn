@@ -3,10 +3,8 @@
 [ext_resource type="Script" uid="uid://cx0m8xnjqgsgv" path="res://scripts/mainMenuButtons.gd" id="1_2mh07"]
 [ext_resource type="Texture2D" uid="uid://b5xw05eweykof" path="res://assets/DataclysmInText.png" id="1_2yplo"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h70hp"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0tj4m"]
-bg_color = Color(0.822303, 0.798634, 0.798634, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a7hqt"]
+bg_color = Color(0.969137, 0.969137, 0.969137, 1)
 corner_radius_top_left = 16
 corner_radius_top_right = 16
 corner_radius_bottom_right = 16
@@ -23,14 +21,16 @@ corner_radius_bottom_left = 16
 shadow_size = 5
 shadow_offset = Vector2(0.1, 3.405)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a7hqt"]
-bg_color = Color(0.969137, 0.969137, 0.969137, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0tj4m"]
+bg_color = Color(0.822303, 0.798634, 0.798634, 1)
 corner_radius_top_left = 16
 corner_radius_top_right = 16
 corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
 shadow_size = 5
 shadow_offset = Vector2(0.1, 3.405)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h70hp"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_rw0xb"]
 texture = ExtResource("1_2yplo")
@@ -65,15 +65,15 @@ metadata/_edit_lock_ = true
 [node name="Button" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
-theme_override_styles/focus = SubResource("StyleBoxEmpty_h70hp")
-theme_override_styles/hover = SubResource("StyleBoxFlat_0tj4m")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_cifys")
 theme_override_styles/normal = SubResource("StyleBoxFlat_a7hqt")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_cifys")
+theme_override_styles/hover = SubResource("StyleBoxFlat_0tj4m")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_h70hp")
 text = "Start Game"
 script = ExtResource("1_2mh07")
 metadata/_edit_lock_ = true
@@ -81,15 +81,15 @@ metadata/_edit_lock_ = true
 [node name="Button2" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
-theme_override_styles/focus = SubResource("StyleBoxEmpty_h70hp")
-theme_override_styles/hover = SubResource("StyleBoxFlat_0tj4m")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_cifys")
 theme_override_styles/normal = SubResource("StyleBoxFlat_a7hqt")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_cifys")
+theme_override_styles/hover = SubResource("StyleBoxFlat_0tj4m")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_h70hp")
 text = "Options"
 script = ExtResource("1_2mh07")
 metadata/_edit_lock_ = true
@@ -97,15 +97,15 @@ metadata/_edit_lock_ = true
 [node name="Button3" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
-theme_override_styles/focus = SubResource("StyleBoxEmpty_h70hp")
-theme_override_styles/hover = SubResource("StyleBoxFlat_0tj4m")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_cifys")
 theme_override_styles/normal = SubResource("StyleBoxFlat_a7hqt")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_cifys")
+theme_override_styles/hover = SubResource("StyleBoxFlat_0tj4m")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_h70hp")
 text = "Exit
 "
 script = ExtResource("1_2mh07")

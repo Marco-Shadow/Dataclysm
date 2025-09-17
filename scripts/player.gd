@@ -7,6 +7,7 @@ const TRAJECTORY_POINTS = 42
 const MAX_TRAJECTORY_TIME = 5.0
 const JETPACK_FORCE = 250.0  # Strong upward force for jetpack
 const JETPACK_MAX_FUEL = 0.5  # 0.5 seconds of jetpack fuel per turn
+const MaxMovementDistance = 200
 
 var sprite: AnimatedSprite2D
 var deathSprite: AnimatedSprite2D
@@ -15,6 +16,7 @@ var labelObj: Label
 var trajectoryLine: Line2D
 var health: float = 100.0
 var dead = false
+var DistaceToMove := MaxMovementDistance
 
 # Jetpack variables
 var jetpack_active = false
@@ -41,8 +43,7 @@ func _ready() -> void:
 	healthObj = get_node("Health")
 	labelObj = get_node("PlayerLabel")
 	
-	labelObj.text = "Player " + str(player_id )
-	
+	labelObj.text = "Player " + str(player_id )	
 	# Select a random animation for the projectile
 	if sprite and sprite is AnimatedSprite2D:
 		# Get all available animations
@@ -77,6 +78,7 @@ func _ready() -> void:
 	if terrain_node_path != null:
 		terrain_node = get_node(terrain_node_path)
 	print("Player " + str(player_id) + " initialized")
+	
 
 func die():
 	dead = true
@@ -218,7 +220,7 @@ func apply_dotted_effect():
 
 func _physics_process(delta: float) -> void:
 	healthObj.scale.x = (0.135 / 100) * health
-	
+		
 	# Check if jetpack is activated
 	if is_my_turn() and Input.is_action_pressed("player_jetpack") and jetpack_fuel > 0:
 		jetpack_active = true
@@ -254,14 +256,33 @@ func _physics_process(delta: float) -> void:
 		sprite.flip_h = true
 	elif direction > 0:
 		sprite.flip_h = false
-	
+		
 	# No need to update trajectory when player flips anymore
 	
 	if direction != 0:
-		velocity.x = direction * SPEED
+		velocity.x = direction * SPEED		
 	else:
 		velocity.x = 0
+		
+	# Richtung als -1 / 0 / 1
+	
+	if direction != 0 and DistaceToMove > 0.0:
+		# Strecke, die wir *würden* zurücklegen in diesem Frame
+		var distance_this_frame: float = abs(velocity.x) * delta
 
+		if distance_this_frame >= DistaceToMove:
+			# nur noch die restliche Distanz zulassen (verhindert negatives DistaceToMove)
+			var allowed_ratio := 0.0
+			if distance_this_frame != 0.0:
+				allowed_ratio = DistaceToMove / distance_this_frame
+			velocity.x = velocity.x * allowed_ratio
+			DistaceToMove = 0.0
+		else:
+			# normalen Move erlauben und Distanz reduzieren
+			DistaceToMove -= distance_this_frame
+	else:
+		velocity.x = 0.0
+			
 	move_and_slide()
 
 

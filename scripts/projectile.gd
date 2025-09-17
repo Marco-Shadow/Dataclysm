@@ -141,6 +141,7 @@ func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Players"):
 		print("player")
 		var player_id = body.player_id
+		
 		if shooter_id == player_id:
 			return
 		
