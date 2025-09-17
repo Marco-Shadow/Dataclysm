@@ -143,7 +143,11 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Projectile" type="Area2D"]
+[node name="Projectile" type="RigidBody2D"]
+collision_layer = 2
+gravity_scale = -0.1
+contact_monitor = true
+max_contacts_reported = 1
 script = ExtResource("1_qg27n")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

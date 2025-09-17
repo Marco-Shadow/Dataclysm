@@ -6,7 +6,8 @@ const GRAVITY = 1200.0
 const TRAJECTORY_POINTS = 42
 const MAX_TRAJECTORY_TIME = 5.0
 const JETPACK_FORCE = 250.0  # Strong upward force for jetpack
-const JETPACK_MAX_FUEL = 0.5  # 0.5 seconds of jetpack fuel per turn
+
+const JETPACK_MAX_FUEL = 1.0  # 1.0 seconds of jetpack fuel per turn
 const MaxMovementDistance = 200
 
 var sprite: AnimatedSprite2D
@@ -19,6 +20,7 @@ var dead = false
 var DistaceToMove := MaxMovementDistance
 
 # Jetpack variables
+@onready var fuel_bar = $FuelBar
 var jetpack_active = false
 var jetpack_fuel = JETPACK_MAX_FUEL
 var jetpack_refilled = true  # Start with fuel available
@@ -220,10 +222,13 @@ func apply_dotted_effect():
 
 func _physics_process(delta: float) -> void:
 	healthObj.scale.x = (0.135 / 100) * health
-		
+
+	fuel_bar.value = jetpack_fuel
+
 	# Check if jetpack is activated
 	if is_my_turn() and Input.is_action_pressed("player_jetpack") and jetpack_fuel > 0:
 		jetpack_active = true
+		jetpack_fuel -= delta   # hier wird Treibstoff abgezogen
 	else:
 		jetpack_active = false
 		
@@ -305,6 +310,10 @@ func do_shoot() -> void:
 	var projectile = proj_scene.instantiate()
 	
 	projectile.shooter_id = player_id
+	projectile.shooter_node = self
+
+	
+	projectile.shooter_id = player_id
 	
 	# Use the same offset as in trajectory calculation
 	projectile.position = global_position + projectile_offset
@@ -315,10 +324,12 @@ func do_shoot() -> void:
 	var direction = Vector2.RIGHT.rotated(angle_rad)
 	
 	# Apply initial velocity
-	projectile.velocity = direction * actual_force
-	projectile.gravity = GRAVITY
+	projectile.linear_velocity = direction * actual_force
 	projectile.direction = direction.normalized()
-	projectile.terrain_node = terrain_node
+	projectile.terrain_node = terrain_node 
+	projectile.shooter_id = player_id
+	projectile.shooter_node = self
+
 	
 	# Add projectile to scene
 	get_tree().get_current_scene().add_child(projectile)
