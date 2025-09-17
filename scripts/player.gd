@@ -33,11 +33,19 @@ var shoot_cooldown = 0.0
 var shoot_angle = -90
 
 # Power shooting variables
+var trajectory_dots: Array = []
 var charging_power = false
 var power_level = 0.0
 var max_power = 1.0
 var power_charge_rate = 1.0
 var projectile_offset = Vector2()
+
+# variables for weapons from global list 
+var available_weapons: Array = []
+var current_weapon_index: int = 0
+
+# Variable for hud reference for weapon 
+@onready var hud: CanvasLayer = get_tree().current_scene.get_node("HUD")
 
 func _ready() -> void:
 	sprite = get_node("AnimatedSprite2D")
@@ -45,7 +53,11 @@ func _ready() -> void:
 	healthObj = get_node("Health")
 	labelObj = get_node("PlayerLabel")
 	
-	labelObj.text = "Player " + str(player_id )	
+	labelObj.text = "Player " + str(player_id )
+	# Load weaponlist
+	available_weapons = GlobalSettings.available_weapons
+	_update_weapon_display()
+	
 	# Select a random animation for the projectile
 	if sprite and sprite is AnimatedSprite2D:
 		# Get all available animations
@@ -117,6 +129,46 @@ func damage(amount):
 	health = max(0, health - amount)
 
 func _process(delta: float) -> void:
+	if (health <= 0 and not dead):
+		die()
+
+	# Update cooldown timer
+	if shoot_cooldown > 0:
+		shoot_cooldown -= delta
+
+	if is_my_turn() and not dead:
+		var previous_angle = shoot_angle
+		var previous_power = power_level
+
+		update_trajectory()  # Punkte zeichnen
+
+		if Input.is_action_pressed("player_up"):
+			shoot_angle += 30 * delta
+		if Input.is_action_pressed("player_down"):
+			shoot_angle -= 30 * delta
+
+		# Handle charging and shooting
+		if Input.is_action_just_pressed("player_shoot"):
+			charging_power = true
+			power_level = 0.0
+			update_trajectory()
+		elif charging_power and Input.is_action_pressed("player_shoot"):
+			power_level = min(power_level + power_charge_rate * delta, max_power)
+		elif charging_power and Input.is_action_just_released("player_shoot"):
+			if power_level >= 0.05:
+				do_shoot()
+			charging_power = false
+			update_trajectory()
+
+		if previous_angle != shoot_angle or previous_power != power_level:
+			update_trajectory()
+	else:
+		# 👇 NEU: Alle Punkte löschen, wenn Spieler nicht am Zug ist
+		var dot_container = get_node_or_null("TrajectoryDots")
+		if dot_container:
+			for child in dot_container.get_children():
+				child.queue_free()
+
 	if(health <= 0 and not dead):
 		die()
 	
@@ -129,12 +181,12 @@ func _process(delta: float) -> void:
 		var previous_power = power_level
 		
 		update_trajectory()
-		trajectoryLine.visible = true
 		
-		if Input.is_action_pressed("player_up") and shoot_angle < -10:
+		if Input.is_action_pressed("player_up"):
 			shoot_angle += 30 * delta
-		elif Input.is_action_pressed("player_down") and shoot_angle > -170:
+		if Input.is_action_pressed("player_down"):
 			shoot_angle -= 30 * delta
+
 		
 		# Handle charging and shooting
 		if Input.is_action_just_pressed("player_shoot"):
@@ -161,7 +213,8 @@ func _process(delta: float) -> void:
 			update_trajectory()
 	else:
 		trajectoryLine.visible = false
-	
+
+				
 	# Update jetpack fuel if active
 	if jetpack_active:
 		jetpack_fuel -= delta
@@ -170,43 +223,64 @@ func _process(delta: float) -> void:
 			jetpack_fuel = 0
 
 func update_trajectory():
+	# --- ALTE PUNKTE LÖSCHEN ---
+	for dot in trajectory_dots:
+		dot.queue_free()
+	trajectory_dots.clear()
+	
 	trajectoryLine.clear_points()
 	
-	var actual_force = MIN_SHOOT_FORCE + (MAX_SHOOT_FORCE - MIN_SHOOT_FORCE) * power_level
-	
 	var angle_rad = deg_to_rad(shoot_angle)
-	# Always use the same direction calculation regardless of player flip
 	var direction = Vector2.RIGHT.rotated(angle_rad)
+	var time_step = 0.008
 	
-	# Initial velocity and position
-	var vel = direction * actual_force
-	var pos = projectile_offset  # Starting position offset
-	var time_step = 0.05  # Fixed time step for prediction
-	
-	# Add starting point
-	trajectoryLine.add_point(pos)
-	
+	# --------------------------------------------------------
+	# 1. Wenn Spieler gerade auflädt -> volle Vorschau
+	# --------------------------------------------------------
 	if charging_power:
-		# Generate full trajectory when charging
+		var actual_force = MIN_SHOOT_FORCE + (MAX_SHOOT_FORCE - MIN_SHOOT_FORCE) * power_level
+		var vel = direction * actual_force
+		var pos = projectile_offset
+		
 		for i in range(1, TRAJECTORY_POINTS + 1):
-			# Update velocity (apply gravity)
 			vel.y += GRAVITY * time_step
-			
-			# Update position
 			pos += vel * time_step
 			
-			# Add point
-			trajectoryLine.add_point(pos)
-		
-		# Make trajectory dotted
-		apply_dotted_effect()
+			# --- Punkte erzeugen ---
+			var dot = ColorRect.new()
+			dot.color = Color(0.8, 0.8, 0.8, 1)  # grau
+			var size = max(1.5, 6.0 - i * 0.20)   # Punkte schrumpfen
+			dot.size = Vector2(size, size)
+			dot.position = pos
+			add_child(dot)
+			trajectory_dots.append(dot)
+	
+	# --------------------------------------------------------
+	# 2. Wenn Spieler NICHT auflädt -> kurze Richtungs-Vorschau
+	# --------------------------------------------------------
 	else:
-		# When not charging, just add a second point to create a short direction line
-		vel.y += GRAVITY * time_step
-		pos += vel * time_step * 2  # Slightly longer line for better visibility
+		var preview_force = MIN_SHOOT_FORCE + (MAX_SHOOT_FORCE - MIN_SHOOT_FORCE) * 0.75
+		var vel = direction * preview_force
+		var pos = projectile_offset
 		
-		# Add the second point for direction indication
-		trajectoryLine.add_point(pos)
+		for i in range(1, 6):  # nur 5 Punkte -> kurze Linie
+			vel.y += GRAVITY * time_step
+			pos += vel * time_step
+			
+			var dot = ColorRect.new()
+			dot.color = Color(0.8, 0.8, 0.8, 1)
+			
+			# Punkte starten groß und verschwinden schnell
+			var size = max(0.0, 6.0 - i * 1.5)
+			if size <= 0:
+				break
+			
+			dot.size = Vector2(size, size)
+			dot.position = pos
+			add_child(dot)
+			trajectory_dots.append(dot)
+
+
 
 func apply_dotted_effect():
 	var points = trajectoryLine.get_point_count()
@@ -296,39 +370,56 @@ func is_my_turn() -> bool:
 
 # This is now the internal implementation that actually creates the projectile
 func do_shoot() -> void:
-	if shoot_cooldown > 0:
+	if shoot_cooldown > 0 or dead:
 		return
 		
-	if dead:
-		return
-	
 	# Calculate force
 	var actual_force = MIN_SHOOT_FORCE + (MAX_SHOOT_FORCE - MIN_SHOOT_FORCE) * power_level
 	
-	print("Player " + str(player_id) + " creating projectile with force " + str(actual_force))
-	var proj_scene = preload("uid://b4kdm3lq2kp7a")
-	var projectile = proj_scene.instantiate()
+	# Aktuelle Waffe holen
+	var weapon = available_weapons[current_weapon_index]
 	
+	print("Player " + str(player_id) + " creating projectile with force " + str(actual_force) + "with weapon: " + weapon["name"])
+	#var proj_scene = preload("uid://b4kdm3lq2kp7a")
+	#var projectile = proj_scene.instantiate()
+	
+	var projectile_scene = preload("res://scenes/projectile.tscn")
+	var projectile = projectile_scene.instantiate()
+	
+	# set shooter infos settings
 	projectile.shooter_id = player_id
 	projectile.shooter_node = self
-
 	
-	projectile.shooter_id = player_id
+	projectile.terrain_node = terrain_node
+	
+	
+	# Werte der Waffe ins Projektil übertragen
+	projectile.weapon_name = weapon["name"];
+	projectile.min_damage = weapon["min_damage"]
+	projectile.max_damage = weapon["max_damage"]
+	projectile.initial_speed = weapon["initial_speed"]
+	projectile.gravity = weapon["gravity"]
 	
 	# Use the same offset as in trajectory calculation
 	projectile.position = global_position + projectile_offset
 	
-	# Calculate direction
+	# Richtung berechnen
 	var angle_rad = deg_to_rad(shoot_angle)
-	# Always use the same direction calculation regardless of player flip
 	var direction = Vector2.RIGHT.rotated(angle_rad)
-	
-	# Apply initial velocity
 	projectile.linear_velocity = direction * actual_force
 	projectile.direction = direction.normalized()
-	projectile.terrain_node = terrain_node 
-	projectile.shooter_id = player_id
-	projectile.shooter_node = self
+	
+	# Calculate direction auskommentiert drunter 
+	# var angle_rad = deg_to_rad(shoot_angle)
+	# Always use the same direction calculation regardless of player flip auskommentiert drunter
+	# var direction = Vector2.RIGHT.rotated(angle_rad)
+	
+	# Apply initial velocity wurde auskommentiert
+	# projectile.linear_velocity = direction * actual_force
+	#projectile.direction = direction.normalized()
+	#projectile.terrain_node = terrain_node 
+	#projectile.shooter_id = player_id
+	#projectile.shooter_node = self
 
 	
 	# Add projectile to scene
@@ -343,8 +434,51 @@ func do_shoot() -> void:
 	# Switch turns
 	TurnManager.switch_turn()
 
+# weapon functions
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("weapon_next"):
+		_select_next_weapon()
+	elif event.is_action_pressed("weapon_prev"):
+		_select_previous_weapon()
+
+# Waffenwechsel zuständige Funktionen
+func _select_next_weapon() -> void:
+	current_weapon_index += 1
+	if current_weapon_index >= available_weapons.size():
+		current_weapon_index = 0
+	_update_weapon_display()
+
+
+func _select_previous_weapon() -> void:
+	current_weapon_index -= 1
+	if current_weapon_index < 0:
+		current_weapon_index = available_weapons.size() - 1
+	_update_weapon_display()
+
+
+func _update_weapon_display() -> void:
+	# Aktuelle Waffe holen
+	var weapon = available_weapons[current_weapon_index]
+	# HUD aktualisieren
+	hud.update_weapon(weapon["name"], weapon["icon"])
+
+
 # Public function that the turn manager can call
 func shoot_projectile() -> void:
 	# This function is kept for compatibility but now does nothing
 	# The shooting is fully handled by the player's input logic
-	pass
+	var weapon = available_weapons[current_weapon_index]
+
+	# Projektil-Szene laden
+	var projectile_scene = preload("res://scenes/projectile.tscn")
+	var projectile = projectile_scene.instantiate()
+
+	# Werte der aktuellen Waffe ins Projektil übertragen
+	projectile.min_damage = weapon["min_damage"]
+	projectile.max_damage = weapon["max_damage"]
+	projectile.initial_speed = weapon["initial_speed"]
+	projectile.gravity = weapon["gravity"]
+
+	# Projektil in die Szene einfügen
+	get_tree().current_scene.add_child(projectile)
+	projectile.global_position = global_position

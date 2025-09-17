@@ -3,6 +3,190 @@ extends Node
 var config_file = ConfigFile.new()
 var config_path: String
 
+# Gloabl weaponlist => can be called everywhere with globalSettings.available_weapons
+var available_weapons: Array = [
+	{
+		"name": "cd",
+		"min_damage": 10, "max_damage": 40,
+		"min_velocity_for_damage": 100, "max_velocity_for_damage": 1200,
+		"initial_speed": 600.0,
+		"gravity": 1200.0,
+		"rotation_speed_multiplier": 0.01,
+		"enable_trace": true,
+		"trace_dot_interval": 0.05, "trace_dot_lifetime": 1.0,
+		"trace_dot_size": 4.0, "trace_dot_color": Color(1,1,1,0.7),
+		"icon": preload("res://assets/projectiles/cd.png")
+	},
+	{
+		"name": "controller",
+		"min_damage": 10, "max_damage": 40,
+		"min_velocity_for_damage": 100, "max_velocity_for_damage": 1200,
+		"initial_speed": 600.0,
+		"gravity": 1200.0,
+		"rotation_speed_multiplier": 0.01,
+		"enable_trace": true,
+		"trace_dot_interval": 0.05, "trace_dot_lifetime": 1.0,
+		"trace_dot_size": 4.0, "trace_dot_color": Color(1,1,1,0.7),
+		"icon": preload("res://assets/projectiles/controller.png")
+	},
+	{
+		"name": "headphones",
+		"min_damage": 10, "max_damage": 40,
+		"min_velocity_for_damage": 100, "max_velocity_for_damage": 1200,
+		"initial_speed": 600.0,
+		"gravity": 1200.0,
+		"rotation_speed_multiplier": 0.01,
+		"enable_trace": true,
+		"trace_dot_interval": 0.05, "trace_dot_lifetime": 1.0,
+		"trace_dot_size": 4.0, "trace_dot_color": Color(1,1,1,0.7),
+		"icon": preload("res://assets/projectiles/headphones.png")
+	},
+	{
+		"name": "joystick",
+		"min_damage": 10, "max_damage": 40,
+		"min_velocity_for_damage": 100, "max_velocity_for_damage": 1200,
+		"initial_speed": 600.0,
+		"gravity": 1200.0,
+		"rotation_speed_multiplier": 0.01,
+		"enable_trace": true,
+		"trace_dot_interval": 0.05, "trace_dot_lifetime": 1.0,
+		"trace_dot_size": 4.0, "trace_dot_color": Color(1,1,1,0.7),
+		"icon": preload("res://assets/projectiles/joystick.png")
+	},
+	{
+		"name": "keyboard",
+		"min_damage": 20, "max_damage": 60,
+		"min_velocity_for_damage": 200, "max_velocity_for_damage": 1500,
+		"initial_speed": 800.0,
+		"gravity": 900.0,
+		"rotation_speed_multiplier": 0.02,
+		"enable_trace": false,
+		"icon": preload("res://assets/projectiles/keyboard.png")
+	},
+	{
+		"name": "laptop",
+		"min_damage": 10, "max_damage": 40,
+		"min_velocity_for_damage": 100, "max_velocity_for_damage": 1200,
+		"initial_speed": 600.0,
+		"gravity": 1200.0,
+		"rotation_speed_multiplier": 0.01,
+		"enable_trace": true,
+		"trace_dot_interval": 0.05, "trace_dot_lifetime": 1.0,
+		"trace_dot_size": 4.0, "trace_dot_color": Color(1,1,1,0.7),
+		"icon": preload("res://assets/projectiles/laptop.png")
+	},
+	{
+		"name": "mainboard",
+		"min_damage": 10, "max_damage": 40,
+		"min_velocity_for_damage": 100, "max_velocity_for_damage": 1200,
+		"initial_speed": 600.0,
+		"gravity": 1200.0,
+		"rotation_speed_multiplier": 0.01,
+		"enable_trace": true,
+		"trace_dot_interval": 0.05, "trace_dot_lifetime": 1.0,
+		"trace_dot_size": 4.0, "trace_dot_color": Color(1,1,1,0.7),
+		"icon": preload("res://assets/projectiles/mainboard.png")
+	},
+	{
+		"name": "mic",
+		"min_damage": 10, "max_damage": 40,
+		"min_velocity_for_damage": 100, "max_velocity_for_damage": 1200,
+		"initial_speed": 600.0,
+		"gravity": 1200.0,
+		"rotation_speed_multiplier": 0.01,
+		"enable_trace": true,
+		"trace_dot_interval": 0.05, "trace_dot_lifetime": 1.0,
+		"trace_dot_size": 4.0, "trace_dot_color": Color(1,1,1,0.7),
+		"icon": preload("res://assets/projectiles/mic.png")
+	},
+	{
+		"name": "monitor",
+		"min_damage": 10, "max_damage": 40,
+		"min_velocity_for_damage": 100, "max_velocity_for_damage": 1200,
+		"initial_speed": 600.0,
+		"gravity": 1200.0,
+		"rotation_speed_multiplier": 0.01,
+		"enable_trace": true,
+		"trace_dot_interval": 0.05, "trace_dot_lifetime": 1.0,
+		"trace_dot_size": 4.0, "trace_dot_color": Color(1,1,1,0.7),
+		"icon": preload("res://assets/projectiles/monitor.png")
+	},
+	{
+		"name": "mouse",
+		"min_damage": 10, "max_damage": 40,
+		"min_velocity_for_damage": 100, "max_velocity_for_damage": 1200,
+		"initial_speed": 600.0,
+		"gravity": 1200.0,
+		"rotation_speed_multiplier": 0.01,
+		"enable_trace": true,
+		"trace_dot_interval": 0.05, "trace_dot_lifetime": 1.0,
+		"trace_dot_size": 4.0, "trace_dot_color": Color(1,1,1,0.7),
+		"icon": preload("res://assets/projectiles/mouse.png")
+	},
+	{
+		"name": "pc",
+		"min_damage": 10, "max_damage": 40,
+		"min_velocity_for_damage": 100, "max_velocity_for_damage": 1200,
+		"initial_speed": 600.0,
+		"gravity": 1200.0,
+		"rotation_speed_multiplier": 0.01,
+		"enable_trace": true,
+		"trace_dot_interval": 0.05, "trace_dot_lifetime": 1.0,
+		"trace_dot_size": 4.0, "trace_dot_color": Color(1,1,1,0.7),
+		"icon": preload("res://assets/projectiles/pc.png")
+	},
+	{
+		"name": "ram",
+		"min_damage": 10, "max_damage": 40,
+		"min_velocity_for_damage": 100, "max_velocity_for_damage": 1200,
+		"initial_speed": 600.0,
+		"gravity": 1200.0,
+		"rotation_speed_multiplier": 0.01,
+		"enable_trace": true,
+		"trace_dot_interval": 0.05, "trace_dot_lifetime": 1.0,
+		"trace_dot_size": 4.0, "trace_dot_color": Color(1,1,1,0.7),
+		"icon": preload("res://assets/projectiles/ram.png")
+	},
+	{
+		"name": "rtx",
+		"min_damage": 10, "max_damage": 40,
+		"min_velocity_for_damage": 100, "max_velocity_for_damage": 1200,
+		"initial_speed": 600.0,
+		"gravity": 1200.0,
+		"rotation_speed_multiplier": 0.01,
+		"enable_trace": true,
+		"trace_dot_interval": 0.05, "trace_dot_lifetime": 1.0,
+		"trace_dot_size": 4.0, "trace_dot_color": Color(1,1,1,0.7),
+		"icon": preload("res://assets/projectiles/rtx.png")
+	},
+	{
+		"name": "smartphone",
+		"min_damage": 10, "max_damage": 40,
+		"min_velocity_for_damage": 100, "max_velocity_for_damage": 1200,
+		"initial_speed": 600.0,
+		"gravity": 1200.0,
+		"rotation_speed_multiplier": 0.01,
+		"enable_trace": true,
+		"trace_dot_interval": 0.05, "trace_dot_lifetime": 1.0,
+		"trace_dot_size": 4.0, "trace_dot_color": Color(1,1,1,0.7),
+		"icon": preload("res://assets/projectiles/smartphone.png")
+	},
+	{
+		"name": "usb",
+		"min_damage": 10, "max_damage": 40,
+		"min_velocity_for_damage": 100, "max_velocity_for_damage": 1200,
+		"initial_speed": 600.0,
+		"gravity": 1200.0,
+		"rotation_speed_multiplier": 0.01,
+		"enable_trace": true,
+		"trace_dot_interval": 0.05, "trace_dot_lifetime": 1.0,
+		"trace_dot_size": 4.0, "trace_dot_color": Color(1,1,1,0.7),
+		"icon": preload("res://assets/projectiles/usb.png")
+	}
+]
+
+
+
 func _ready() -> void:
 	# Set the config path based on OS
 	if OS.get_name() == "Windows":
