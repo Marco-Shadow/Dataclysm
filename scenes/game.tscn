@@ -403,6 +403,7 @@ player_scene = ExtResource("1_oxd0a")
 camera = NodePath("../Camera2D")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(-550, 0)

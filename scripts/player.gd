@@ -288,6 +288,10 @@ func do_shoot() -> void:
 	var projectile = proj_scene.instantiate()
 	
 	projectile.shooter_id = player_id
+	projectile.shooter_node = self
+
+	
+	projectile.shooter_id = player_id
 	
 	# Use the same offset as in trajectory calculation
 	projectile.position = global_position + projectile_offset
@@ -298,10 +302,12 @@ func do_shoot() -> void:
 	var direction = Vector2.RIGHT.rotated(angle_rad)
 	
 	# Apply initial velocity
-	projectile.velocity = direction * actual_force
-	projectile.gravity = GRAVITY
+	projectile.linear_velocity = direction * actual_force
 	projectile.direction = direction.normalized()
-	projectile.terrain_node = terrain_node
+	projectile.terrain_node = terrain_node 
+	projectile.shooter_id = player_id
+	projectile.shooter_node = self
+
 	
 	# Add projectile to scene
 	get_tree().get_current_scene().add_child(projectile)
