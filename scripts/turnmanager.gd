@@ -81,6 +81,7 @@ func spawn_player(id: int) -> void:
 		
 func _process(delta: float) -> void:
 	if one_player_remaining() and not changedToGameover:
+		await get_tree().create_timer(0.5).timeout  # 2 Sekunden warten
 		get_tree().change_scene_to_file("res://scenes/gameOver.tscn")
 		changedToGameover = true
 		return
