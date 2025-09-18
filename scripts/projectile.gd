@@ -1,7 +1,7 @@
 extends RigidBody2D
 
 # --- Export-Variablen ---
-@export var initial_speed: float = 600.0
+# @export var initial_speed: float = 600.0
 @export var pGravity: float = 1200.0
 @export var rotation_speed_multiplier: float = 0.01
 
@@ -13,8 +13,8 @@ extends RigidBody2D
 @export var trace_dot_color: Color = Color(1, 1, 1, 0.7)
 
 # Damage settings
-@export var min_damage: float = 5.0
-@export var max_damage: float = 40.0
+#ä@export var min_damage: float = 5.0
+#@export var max_damage: float = 40.0
 @export var min_velocity_for_damage: float = 100.0
 @export var max_velocity_for_damage: float = 1500.0
 
@@ -27,15 +27,30 @@ var terrain_node: Node2D
 var spin_direction: int = 1
 var trace_timer: float = 0.0
 
+# Values are later on being overwritten by player
+var min_damage: int = 0
+var max_damage: int = 0
+var initial_speed: float = 0.0
+var gravity: float = 0.0
+
+# Variablen, die vom Player gesetzt werden
+var weapon_name: String = "cd"
+
+var velocity: Vector2 = Vector2.ZERO
+
 # --- Ready ---
 func _ready() -> void:
 	# Animation auswählen
 	var animated_sprite = get_node_or_null("AnimatedSprite2D")
 	if animated_sprite and animated_sprite is AnimatedSprite2D:
+		# Aktuelle Waffe holen
+		if animated_sprite.sprite_frames.has_animation(weapon_name):
+			animated_sprite.play(weapon_name)
 		var animations = animated_sprite.sprite_frames.get_animation_names()
 		if animations.size() > 0:
-			var random_animation = animations[randi() % animations.size()]
-			animated_sprite.play(random_animation)
+			animated_sprite.play(weapon_name)
+	
+	
 	
 	# Startgeschwindigkeit setzen (nur wenn noch nicht gesetzt)
 	if linear_velocity == Vector2.ZERO and direction != Vector2.ZERO:
