@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://p2grgjn11vub"]
+[gd_scene load_steps=10 format=3 uid="uid://p2grgjn11vub"]
 
 [ext_resource type="Script" uid="uid://cx0m8xnjqgsgv" path="res://scripts/mainMenuButtons.gd" id="1_2mh07"]
 [ext_resource type="Texture2D" uid="uid://b5xw05eweykof" path="res://assets/DataclysmInText.png" id="1_2yplo"]
 [ext_resource type="Script" uid="uid://dmcwcahhjn2bi" path="res://scenes/label.gd" id="3_48ign"]
+[ext_resource type="Script" uid="uid://dvfjuag8xn3pt" path="res://scenes/nicolo.gd" id="4_l7wge"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a7hqt"]
 bg_color = Color(0.969137, 0.969137, 0.969137, 1)
@@ -142,6 +143,16 @@ offset_right = -16.0
 offset_bottom = 112.0
 grow_horizontal = 0
 text = "Profilbild"
+
+[node name="Nicolo" type="Label" parent="."]
+layout_mode = 0
+offset_left = 978.0
+offset_top = 589.0
+offset_right = 1144.0
+offset_bottom = 638.0
+text = "Presented by 
+BorderCore Solutions"
+script = ExtResource("4_l7wge")
 
 [connection signal="pressed" from="VBoxContainer/Button" to="VBoxContainer/Button" method="_on_start_pressed"]
 [connection signal="pressed" from="VBoxContainer/Button2" to="VBoxContainer/Button2" method="_on_settings_pressed"]
