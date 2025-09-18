@@ -147,7 +147,7 @@ animations = [{
 collision_layer = 2
 gravity_scale = -0.1
 contact_monitor = true
-max_contacts_reported = 1
+max_contacts_reported = 8
 script = ExtResource("1_qg27n")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

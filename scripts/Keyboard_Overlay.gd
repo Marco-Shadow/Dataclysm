@@ -16,6 +16,10 @@ func _input(event):
 					$VBoxContainer/Keyboard_S/SKeyAnimation.play("s_pressed")
 				KEY_D:
 					$VBoxContainer/Keyboard_D/DKeyAnimation.play("d_pressed")
+				KEY_Q:
+					$VBoxContainer/Keyboard_Q/QKeyAnimation.play("q_released")
+				KEY_E:
+					$VBoxContainer/Keyboard_E/EKeyAnimation.play("e_released")
 				KEY_F1:
 					$VBoxContainer/Keyboard_F1/F1KeyAnimation.play("f1_pressed")
 					$".".visible = !$".".visible
@@ -33,6 +37,10 @@ func _input(event):
 					$VBoxContainer/Keyboard_S/SKeyAnimation.play("s_released")
 				KEY_D:
 					$VBoxContainer/Keyboard_D/DKeyAnimation.play("d_released")
+				KEY_Q:
+					$VBoxContainer/Keyboard_Q/QKeyAnimation.play("q_released")
+				KEY_E:
+					$VBoxContainer/Keyboard_E/EKeyAnimation.play("e_released")
 				KEY_F1:
 					$VBoxContainer/Keyboard_F1/F1KeyAnimation.play("f1_released")
 				KEY_CTRL:
