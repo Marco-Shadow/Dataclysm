@@ -98,7 +98,7 @@ func _ready() -> void:
 func die():
 	dead = true
 	health = 0
-	sprite.visible = false
+	#sprite.visible = false
 	trajectoryLine.visible = false
 	deathSprite.play("explode")
 	
