@@ -136,7 +136,7 @@ func _process(delta: float) -> void:
 	if shoot_cooldown > 0:
 		shoot_cooldown -= delta
 
-	if is_my_turn() and not dead:
+	if is_my_turn() and not dead and not TurnManager.turn_locked:
 		var previous_angle = shoot_angle
 		var previous_power = power_level
 
@@ -372,6 +372,8 @@ func is_my_turn() -> bool:
 # This is now the internal implementation that actually creates the projectile
 func do_shoot() -> void:
 	if shoot_cooldown > 0 or dead:
+		return
+	if TurnManager.turn_locked:
 		return
 		
 	# Calculate force
