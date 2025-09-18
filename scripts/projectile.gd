@@ -1,8 +1,7 @@
 extends RigidBody2D
 
 # --- Export-Variablen ---
-# @export var initial_speed: float = 600.0
-@export var pGravity: float = 1200.0
+@export var pGravity: float = 1000.0
 @export var rotation_speed_multiplier: float = 0.01
 
 # Trace settings
@@ -13,10 +12,8 @@ extends RigidBody2D
 @export var trace_dot_color: Color = Color(1, 1, 1, 0.7)
 
 # Damage settings
-#ä@export var min_damage: float = 5.0
-#@export var max_damage: float = 40.0
-@export var min_velocity_for_damage: float = 100.0
-@export var max_velocity_for_damage: float = 1500.0
+@export var min_velocity_for_damage: float = 50.0    # vorher 100.0
+@export var max_velocity_for_damage: float = 800.0   # vorher 1500.0
 
 # --- Variablen ---
 var direction: Vector2
@@ -40,26 +37,19 @@ var velocity: Vector2 = Vector2.ZERO
 
 # --- Ready ---
 func _ready() -> void:
-	# Animation auswählen
 	var animated_sprite = get_node_or_null("AnimatedSprite2D")
 	if animated_sprite and animated_sprite is AnimatedSprite2D:
-		# Aktuelle Waffe holen
 		if animated_sprite.sprite_frames.has_animation(weapon_name):
 			animated_sprite.play(weapon_name)
 		var animations = animated_sprite.sprite_frames.get_animation_names()
 		if animations.size() > 0:
 			animated_sprite.play(weapon_name)
 	
-	
-	
-	# Startgeschwindigkeit setzen (nur wenn noch nicht gesetzt)
 	if linear_velocity == Vector2.ZERO and direction != Vector2.ZERO:
 		linear_velocity = direction.normalized() * initial_speed
 	
-	# Spin Richtung
 	spin_direction = 1 if direction.x >= 0 else -1
 	
-	# Shooter beim Start kurz ignorieren
 	if shooter_node:
 		add_collision_exception_with(shooter_node)
 		await get_tree().create_timer(0.2).timeout
@@ -67,15 +57,12 @@ func _ready() -> void:
 
 # --- Physik ---
 func _physics_process(delta: float) -> void:
-	# Eigene Gravitation (falls Godot Gravity ausgestellt ist)
 	linear_velocity.y += pGravity * delta
 	
-	# Rotation abhängig von Geschwindigkeit
 	var velocity_magnitude = linear_velocity.length()
 	var rotation_amount = velocity_magnitude * rotation_speed_multiplier * spin_direction * delta
 	rotate(rotation_amount)
 	
-	# Trace-Dots
 	if enable_trace:
 		trace_timer += delta
 		if trace_timer >= trace_dot_interval:
@@ -108,11 +95,11 @@ func create_dot_texture(size: float, color: Color) -> ImageTexture:
 # --- Damage ---
 func calculate_damage() -> float:
 	var current_speed = linear_velocity.length()
-	current_speed = min(current_speed, max_velocity_for_damage)
-	if current_speed < min_velocity_for_damage:
-		return 0.0
 	
-	var t = (current_speed - min_velocity_for_damage) / (max_velocity_for_damage - min_velocity_for_damage)
+	# ✅ Skala automatisch an die initial_speed anpassen
+	var max_speed = max(initial_speed, 1.0) # Sicherheit gegen Division durch 0
+	var t = clamp(current_speed / max_speed, 0.0, 1.0)
+	
 	var damage = lerp(min_damage, max_damage, t)
 	return max(damage, 0.0)
 
@@ -126,7 +113,6 @@ func _on_body_entered(body: Node) -> void:
 	
 	if body.is_in_group("Players"):
 		var player_id = body.player_id
-
 		var player = TurnManager.get_player(player_id)
 		if player:
 			var damage_amount = calculate_damage()
