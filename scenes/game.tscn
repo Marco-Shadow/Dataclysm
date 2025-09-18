@@ -12,9 +12,11 @@
 [ext_resource type="Texture2D" uid="uid://bi5yj37g21ab1" path="res://assets/Double/keyboard_s.png" id="6_kvpfn"]
 [ext_resource type="Texture2D" uid="uid://bw4mkupmyyusg" path="res://assets/Double/keyboard_d.png" id="8_dinhu"]
 [ext_resource type="Texture2D" uid="uid://cubcldrko2127" path="res://assets/Double/keyboard_a.png" id="9_dinhu"]
+[ext_resource type="Texture2D" uid="uid://bb58xxeaconlh" path="res://assets/Double/keyboard_q_outline.png" id="12_37s47"]
 [ext_resource type="Texture2D" uid="uid://bhshvw14hkayp" path="res://assets/Double/keyboard_w.png" id="12_kvuet"]
 [ext_resource type="Texture2D" uid="uid://d2rx4sf7bc4we" path="res://assets/Double/keyboard_f1_outline.png" id="12_ssvqc"]
 [ext_resource type="Texture2D" uid="uid://c6skcvsagaixl" path="res://assets/Double/keyboard_f1.png" id="13_264po"]
+[ext_resource type="Texture2D" uid="uid://tei7ex7gquel" path="res://assets/Double/keyboard_e_outline.png" id="13_bt5mj"]
 [ext_resource type="Texture2D" uid="uid://c8f8c5h6mdhar" path="res://assets/Double/keyboard_ctrl_outline.png" id="13_rysoc"]
 [ext_resource type="Texture2D" uid="uid://c02epotrnj1gw" path="res://assets/Double/keyboard_space_outline.png" id="13_trtic"]
 [ext_resource type="Texture2D" uid="uid://b3ckquyx0mrkf" path="res://assets/Double/keyboard_space.png" id="14_ir15t"]
@@ -1727,6 +1729,10 @@ _data = {
 &"d_released": SubResource("Animation_rysoc")
 }
 
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bt5mj"]
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_e1j6l"]
+
 [sub_resource type="Animation" id="Animation_v2yb1"]
 length = 0.001
 tracks/0/type = "value"
@@ -1883,6 +1889,21 @@ _data = {
 &"space_released": SubResource("Animation_qnb83")
 }
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ir15t"]
+shader = ExtResource("1_lbhrr")
+shader_parameter/color_deep = Color(0.1, 0, 0.2, 1)
+shader_parameter/color_mid = Color(0.3, 0.1, 0.4, 1)
+shader_parameter/color_accent = Color(0.5, 0.2, 0.7, 1)
+shader_parameter/speed = 0.25
+shader_parameter/blur_amount = 4.0
+shader_parameter/gradient_scale = 2.5
+shader_parameter/movement = 0.4
+
+[sub_resource type="LabelSettings" id="LabelSettings_1kice"]
+font_size = 18
+font_color = Color(1, 0, 1, 1)
+outline_size = 3
+
 [node name="Game" type="Node2D"]
 
 [node name="world" type="Node2D" parent="." node_paths=PackedStringArray("game", "camera")]
@@ -1997,6 +2018,32 @@ libraries = {
 &"": SubResource("AnimationLibrary_1kice")
 }
 
+[node name="Keyboard_Q" type="TextureRect" parent="CanvasLayer/HelpMenu/VBoxContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource("12_37s47")
+expand_mode = 1
+
+[node name="QKeyAnimation" type="AnimationPlayer" parent="CanvasLayer/HelpMenu/VBoxContainer/Keyboard_Q"]
+libraries = {
+&"QKeyAnimation": SubResource("AnimationLibrary_bt5mj")
+}
+
+[node name="Keyboard_E" type="TextureRect" parent="CanvasLayer/HelpMenu/VBoxContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource("13_bt5mj")
+expand_mode = 1
+
+[node name="EKeyAnimation" type="AnimationPlayer" parent="CanvasLayer/HelpMenu/VBoxContainer/Keyboard_E"]
+libraries = {
+&"EKeyAnimation": SubResource("AnimationLibrary_e1j6l")
+}
+
 [node name="Keyboard_F1" type="TextureRect" parent="CanvasLayer/HelpMenu/VBoxContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
@@ -2039,9 +2086,10 @@ libraries = {
 [node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer/HelpMenu"]
 clip_contents = true
 layout_mode = 1
-offset_left = 64.0
-offset_right = 464.0
-offset_bottom = 1152.0
+offset_left = 39.0
+offset_top = -1.0
+offset_right = 439.0
+offset_bottom = 1151.0
 scale = Vector2(0.5, 0.5)
 
 [node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/HelpMenu/VBoxContainer2"]
@@ -2080,6 +2128,24 @@ text = "Move Right"
 fit_content = true
 vertical_alignment = 1
 
+[node name="RichTextLabel5" type="RichTextLabel" parent="CanvasLayer/HelpMenu/VBoxContainer2"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/normal_font_size = 24
+text = "Prev Weapon "
+fit_content = true
+vertical_alignment = 1
+
+[node name="RichTextLabel6" type="RichTextLabel" parent="CanvasLayer/HelpMenu/VBoxContainer2"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/normal_font_size = 24
+text = "Next Weapon"
+fit_content = true
+vertical_alignment = 1
+
 [node name="RichTextLabel7" type="RichTextLabel" parent="CanvasLayer/HelpMenu/VBoxContainer2"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
@@ -2088,7 +2154,16 @@ text = "Toggle Help "
 fit_content = true
 vertical_alignment = 1
 
-[node name="RichTextLabel6" type="RichTextLabel" parent="CanvasLayer/HelpMenu/VBoxContainer2"]
+[node name="VBoxContainer3" type="VBoxContainer" parent="CanvasLayer/HelpMenu"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 0
+offset_left = 48.0
+offset_top = 240.0
+offset_right = 144.0
+offset_bottom = 436.0
+scale = Vector2(0.5, 0.5)
+
+[node name="RichTextLabel6" type="RichTextLabel" parent="CanvasLayer/HelpMenu/VBoxContainer3"]
 custom_minimum_size = Vector2(96, 96)
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 24
@@ -2096,7 +2171,7 @@ text = "Jetpack"
 fit_content = true
 vertical_alignment = 1
 
-[node name="RichTextLabel5" type="RichTextLabel" parent="CanvasLayer/HelpMenu/VBoxContainer2"]
+[node name="RichTextLabel5" type="RichTextLabel" parent="CanvasLayer/HelpMenu/VBoxContainer3"]
 custom_minimum_size = Vector2(96, 96)
 layout_mode = 2
 theme_override_font_sizes/normal_font_size = 24
@@ -2125,11 +2200,10 @@ script = ExtResource("20_5newe")
 
 [node name="Label" type="Label" parent="HUD/WeaponUI"]
 layout_mode = 0
-offset_left = 10.0
-offset_top = -76.0
-offset_right = 63.0
-offset_bottom = -48.0
-horizontal_alignment = 2
+offset_left = 9.0
+offset_top = -77.0
+offset_right = 181.0
+offset_bottom = -49.0
 uppercase = true
 
 [node name="Icon" type="TextureRect" parent="HUD/WeaponUI"]
@@ -2145,3 +2219,13 @@ offset_right = -24.304
 offset_bottom = -14.080971
 expand_mode = 3
 stretch_mode = 5
+
+[node name="WeaopnHeadline" type="Label" parent="HUD/WeaponUI"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = -101.0
+offset_right = 155.0
+offset_bottom = -78.0
+text = "Ausgewählte Waffe:"
+label_settings = SubResource("LabelSettings_1kice")
+uppercase = true

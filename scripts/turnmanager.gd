@@ -12,6 +12,9 @@ var player_scene: PackedScene
 var camera: Camera2D
 var changedToGameover = false
 
+# variable for locking movement of the other player
+var turn_locked: bool = false
+
 func initialize(p_game: Node2D, p_world: Node2D, p_player_scene: PackedScene, 
 				p_camera: Camera2D) -> void:
 	game = p_game
@@ -113,6 +116,15 @@ func switch_turn():
 	if next_player_found and previous_player_id != current_player_id:
 		print("Switched turn to player ", current_player_id)
 
+# locking movement
+func lock_turn():
+	turn_locked = true
+
+func unlock_turn():
+	turn_locked = false
+	switch_turn()
+	
+	
 # Helper function to check if all players are dead
 func all_players_dead() -> bool:
 	for id in players:

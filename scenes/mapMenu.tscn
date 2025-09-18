@@ -1,0 +1,167 @@
+[gd_scene load_steps=11 format=3 uid="uid://bchq7bwbewfn5"]
+
+[ext_resource type="Texture2D" uid="uid://d21kabh4uv0c3" path="res://assets/Maps/Lama.jpg" id="1_ues1n"]
+
+[sub_resource type="GDScript" id="GDScript_8jies"]
+script/source = "extends Control
+func _on_continue_pressed() -> void:
+	print(\"Start Pressed!\")
+	get_tree().change_scene_to_file(\"res://scenes/game.tscn\")
+
+func _on_exit_pressed() -> void:
+	print(\"Exit Pressed!\")
+	get_tree().quit()
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8jies"]
+bg_color = Color(0.96862745, 0.96862745, 0.96862745, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d74xx"]
+bg_color = Color(0.6509804, 0.6509804, 0.6509804, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6a756"]
+bg_color = Color(0.8235294, 0.8, 0.8, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8jies"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ues1n"]
+bg_color = Color(0.96862745, 0.96862745, 0.96862745, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n76px"]
+bg_color = Color(0.6509804, 0.6509804, 0.6509804, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h85k7"]
+bg_color = Color(0.8235294, 0.8, 0.8, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ues1n"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_8jies")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0.12941177, 0.12941177, 0.12941177, 0.29411766)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Background"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -250.0
+offset_right = 400.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 25
+
+[node name="Label" type="Label" parent="Background/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Coose a map"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Background/VBoxContainer"]
+layout_mode = 2
+
+[node name="Maps" type="HBoxContainer" parent="Background/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 100
+
+[node name="Map1" type="VBoxContainer" parent="Background/VBoxContainer/Maps"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TextureRect" type="TextureRect" parent="Background/VBoxContainer/Maps/Map1"]
+layout_mode = 2
+texture = ExtResource("1_ues1n")
+
+[node name="Label" type="Label" parent="Background/VBoxContainer/Maps/Map1"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Map 1"
+horizontal_alignment = 1
+
+[node name="Map2" type="VBoxContainer" parent="Background/VBoxContainer/Maps"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TextureRect" type="TextureRect" parent="Background/VBoxContainer/Maps/Map2"]
+layout_mode = 2
+texture = ExtResource("1_ues1n")
+
+[node name="Label" type="Label" parent="Background/VBoxContainer/Maps/Map2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Map 2"
+horizontal_alignment = 1
+
+[node name="Map3" type="VBoxContainer" parent="Background/VBoxContainer/Maps"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TextureRect" type="TextureRect" parent="Background/VBoxContainer/Maps/Map3"]
+layout_mode = 2
+texture = ExtResource("1_ues1n")
+
+[node name="Label" type="Label" parent="Background/VBoxContainer/Maps/Map3"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Map 3"
+horizontal_alignment = 1
+
+[node name="Random" type="VBoxContainer" parent="Background/VBoxContainer/Maps"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TextureRect" type="TextureRect" parent="Background/VBoxContainer/Maps/Random"]
+layout_mode = 2
+texture = ExtResource("1_ues1n")
+
+[node name="Random" type="Label" parent="Background/VBoxContainer/Maps/Random"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Random"
+horizontal_alignment = 1
+
+[node name="Continue" type="Button" parent="Background/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_8jies")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_d74xx")
+theme_override_styles/hover = SubResource("StyleBoxFlat_6a756")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_8jies")
+text = "Continue"
+
+[node name="Exit" type="Button" parent="Background/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_ues1n")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_n76px")
+theme_override_styles/hover = SubResource("StyleBoxFlat_h85k7")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_ues1n")
+text = "Exit"
+
+[connection signal="pressed" from="Background/VBoxContainer/Continue" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="Background/VBoxContainer/Exit" to="." method="_on_exit_pressed"]
