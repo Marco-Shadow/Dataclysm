@@ -1,7 +1,7 @@
 extends CharacterBody2D
 const SPEED = 100.0
-const MAX_SHOOT_FORCE = 1500.0
-const MIN_SHOOT_FORCE = 300.0
+const MAX_SHOOT_FORCE = 800.0   # vorher 1500.0
+const MIN_SHOOT_FORCE = 150.0   # vorher 300.0
 const GRAVITY = 1200.0
 const TRAJECTORY_POINTS = 42
 const MAX_TRAJECTORY_TIME = 5.0
@@ -12,7 +12,7 @@ const MaxMovementDistance = 200
 
 var sprite: AnimatedSprite2D
 var deathSprite: AnimatedSprite2D
-var healthObj: Sprite2D
+@onready var HealthBar = $HealthBar
 var labelObj: Label
 var trajectoryLine: Line2D
 var health: float = 100.0
@@ -51,7 +51,6 @@ var current_weapon_index: int = 0
 func _ready() -> void:
 	sprite = get_node("AnimatedSprite2D")
 	deathSprite = get_node("DeathAnimationSprite")
-	healthObj = get_node("Health")
 	labelObj = get_node("PlayerLabel")
 	
 	labelObj.text = "Player " + str(player_id )
@@ -98,7 +97,7 @@ func _ready() -> void:
 func die():
 	dead = true
 	health = 0
-	sprite.visible = false
+	#sprite.visible = false
 	trajectoryLine.visible = false
 	deathSprite.play("explode")
 	
@@ -296,7 +295,7 @@ func apply_dotted_effect():
 		trajectoryLine.add_point(point)
 
 func _physics_process(delta: float) -> void:
-	healthObj.scale.x = (0.135 / 100) * health
+	HealthBar.value = health
 
 	fuel_bar.value = jetpack_fuel
 

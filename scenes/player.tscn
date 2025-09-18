@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://csa5wg3bw580j"]
+[gd_scene load_steps=25 format=3 uid="uid://csa5wg3bw580j"]
 
 [ext_resource type="Script" uid="uid://s4ofddboap7r" path="res://scripts/player.gd" id="1_ghh78"]
 [ext_resource type="Texture2D" uid="uid://41bdqf1ld3qk" path="res://assets/skins/adventurer.png" id="2_a8ls1"]
@@ -65,15 +65,8 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rhi1g"]
-radius = 19.0
-height = 56.0
-
-[sub_resource type="Gradient" id="Gradient_g2els"]
-colors = PackedColorArray(0, 1, 0, 1, 4.62055e-06, 0.988582, 0.678713, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_qhqgy"]
-gradient = SubResource("Gradient_g2els")
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qfm1y"]
+size = Vector2(34, 56)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_g2els"]
 animations = [{
@@ -119,7 +112,10 @@ animations = [{
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qfm1y"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fulsm"]
-bg_color = Color(0.5003604, 0.5625831, 1, 1)
+bg_color = Color(1, 0.8000001, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4r5pv"]
+bg_color = Color(0, 0.96, 0.07999992, 1)
 
 [node name="player" type="CharacterBody2D"]
 floor_snap_length = 16.0
@@ -142,13 +138,7 @@ sprite_frames = SubResource("SpriteFrames_deru5")
 animation = &"player"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CapsuleShape2D_rhi1g")
-
-[node name="Health" type="Sprite2D" parent="."]
-position = Vector2(-18, -43)
-scale = Vector2(0.13671875, 4)
-texture = SubResource("GradientTexture1D_qhqgy")
-centered = false
+shape = SubResource("RectangleShape2D_qfm1y")
 
 [node name="DeathAnimationSprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_g2els")
@@ -176,4 +166,13 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_fulsm")
 max_value = 200.0
 step = 1.0
 value = 200.0
+show_percentage = false
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+offset_left = -18.0
+offset_top = -44.0
+offset_right = 17.0
+offset_bottom = -39.0
+theme_override_styles/fill = SubResource("StyleBoxFlat_4r5pv")
+value = 100.0
 show_percentage = false
