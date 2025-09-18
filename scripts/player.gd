@@ -17,7 +17,8 @@ var labelObj: Label
 var trajectoryLine: Line2D
 var health: float = 100.0
 var dead = false
-var DistaceToMove := MaxMovementDistance
+var distaceToMove := MaxMovementDistance 
+@onready var movementBar = $MovementBar 
 
 # Jetpack variables
 @onready var fuel_bar = $FuelBar
@@ -97,7 +98,7 @@ func _ready() -> void:
 func die():
 	dead = true
 	health = 0
-	sprite.visible = false
+	#sprite.visible = false
 	trajectoryLine.visible = false
 	deathSprite.play("explode")
 	
@@ -345,23 +346,24 @@ func _physics_process(delta: float) -> void:
 		
 	# Richtung als -1 / 0 / 1
 	
-	if direction != 0 and DistaceToMove > 0.0:
+	if direction != 0 and distaceToMove > 0.0:
 		# Strecke, die wir *würden* zurücklegen in diesem Frame
 		var distance_this_frame: float = abs(velocity.x) * delta
 
-		if distance_this_frame >= DistaceToMove:
-			# nur noch die restliche Distanz zulassen (verhindert negatives DistaceToMove)
+		if distance_this_frame >= distaceToMove:
+			# nur noch die restliche Distanz zulassen (verhindert negatives distaceToMove)
 			var allowed_ratio := 0.0
 			if distance_this_frame != 0.0:
-				allowed_ratio = DistaceToMove / distance_this_frame
+				allowed_ratio = distaceToMove / distance_this_frame
 			velocity.x = velocity.x * allowed_ratio
-			DistaceToMove = 0.0
+			distaceToMove = 0.0
 		else:
 			# normalen Move erlauben und Distanz reduzieren
-			DistaceToMove -= distance_this_frame
+			distaceToMove -= distance_this_frame
 	else:
 		velocity.x = 0.0
-			
+	
+	movementBar.value = distaceToMove
 	move_and_slide()
 
 

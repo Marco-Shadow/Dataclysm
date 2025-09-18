@@ -81,6 +81,7 @@ func spawn_player(id: int) -> void:
 		
 func _process(delta: float) -> void:
 	if one_player_remaining() and not changedToGameover:
+		await get_tree().create_timer(0.5).timeout  # 2 Sekunden warten
 		get_tree().change_scene_to_file("res://scenes/gameOver.tscn")
 		changedToGameover = true
 		return
@@ -105,14 +106,12 @@ func switch_turn():
 		if not deadplayers.has(try_player_id):
 			current_player_id = try_player_id
 			next_player_found = true		
-			playerInstances[current_player_id].DistaceToMove = playerInstances[current_player_id].MaxMovementDistance
+			playerInstances[current_player_id].distaceToMove = playerInstances[current_player_id].MaxMovementDistance
 			break
 	
 	# Only announce the switch if we actually changed players
 	if next_player_found and previous_player_id != current_player_id:
 		print("Switched turn to player ", current_player_id)
-		
-	print(playerInstances[current_player_id].DistaceToMove)
 
 # Helper function to check if all players are dead
 func all_players_dead() -> bool:
