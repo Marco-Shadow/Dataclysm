@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://p2grgjn11vub"]
+[gd_scene load_steps=9 format=3 uid="uid://p2grgjn11vub"]
 
 [ext_resource type="Script" uid="uid://cx0m8xnjqgsgv" path="res://scripts/mainMenuButtons.gd" id="1_2mh07"]
 [ext_resource type="Texture2D" uid="uid://b5xw05eweykof" path="res://assets/DataclysmInText.png" id="1_2yplo"]
+[ext_resource type="Script" uid="uid://dmcwcahhjn2bi" path="res://scenes/label.gd" id="3_48ign"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a7hqt"]
 bg_color = Color(0.969137, 0.969137, 0.969137, 1)
@@ -125,6 +126,7 @@ grow_horizontal = 2
 rotation = 0.00237271
 theme_override_styles/normal = SubResource("StyleBoxTexture_rw0xb")
 horizontal_alignment = 1
+script = ExtResource("3_48ign")
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
