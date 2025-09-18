@@ -12,7 +12,7 @@ const MaxMovementDistance = 200
 
 var sprite: AnimatedSprite2D
 var deathSprite: AnimatedSprite2D
-var healthObj: Sprite2D
+@onready var HealthBar = $HealthBar
 var labelObj: Label
 var trajectoryLine: Line2D
 var health: float = 100.0
@@ -51,7 +51,6 @@ var current_weapon_index: int = 0
 func _ready() -> void:
 	sprite = get_node("AnimatedSprite2D")
 	deathSprite = get_node("DeathAnimationSprite")
-	healthObj = get_node("Health")
 	labelObj = get_node("PlayerLabel")
 	
 	labelObj.text = "Player " + str(player_id )
@@ -296,7 +295,7 @@ func apply_dotted_effect():
 		trajectoryLine.add_point(point)
 
 func _physics_process(delta: float) -> void:
-	healthObj.scale.x = (0.135 / 100) * health
+	HealthBar.value = health
 
 	fuel_bar.value = jetpack_fuel
 
