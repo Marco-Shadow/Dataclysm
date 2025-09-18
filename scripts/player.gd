@@ -135,7 +135,7 @@ func _process(delta: float) -> void:
 	if shoot_cooldown > 0:
 		shoot_cooldown -= delta
 		
-	if is_my_turn() and not dead:
+	if is_my_turn() and not dead and not TurnManager.turn_locked: 
 		var previous_angle = shoot_angle
 		var previous_power = power_level
 		
@@ -250,7 +250,7 @@ func _physics_process(delta: float) -> void:
 		velocity.y += GRAVITY * delta
 	
 	# Return early if it's not this player's turn
-	if not is_my_turn():
+	if not is_my_turn() or TurnManager.turn_locked:
 		velocity.x = 0
 		move_and_slide()
 		return
@@ -369,7 +369,9 @@ func do_shoot() -> void:
 	jetpack_refilled = false
 	
 	# Switch turns
-	TurnManager.switch_turn()
+	# TurnManager.switch_turn()
+	TurnManager.lock_turn()
+
 
 # weapon functions
 func _input(event: InputEvent) -> void:

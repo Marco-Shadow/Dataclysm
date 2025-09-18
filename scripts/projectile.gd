@@ -34,7 +34,7 @@ var initial_speed: float = 0.0
 var gravity: float = 0.0
 
 # Variablen, die vom Player gesetzt werden
-var weapon_name: String = "cd"
+var weapon_name: String = "cd" #standard wert ist cd 
 
 var velocity: Vector2 = Vector2.ZERO
 
@@ -122,6 +122,7 @@ func _on_body_entered(body: Node) -> void:
 		if terrain_node:
 			terrain_node.emit_signal("carve_requested", terrain_node.to_local(global_position), 50.0)
 		queue_free()
+		TurnManager.unlock_turn()
 	
 	if body.is_in_group("Players"):
 		var player_id = body.player_id
@@ -131,3 +132,9 @@ func _on_body_entered(body: Node) -> void:
 			var damage_amount = calculate_damage()
 			player.damage(damage_amount)
 		queue_free()
+		TurnManager.unlock_turn()
+
+func _exit_tree() -> void:
+	# Sicherheit: falls das Projektil auf andere Weise entfernt wird
+	if TurnManager.turn_locked:
+		TurnManager.unlock_turn()
