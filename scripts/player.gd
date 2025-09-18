@@ -1,7 +1,7 @@
 extends CharacterBody2D
 const SPEED = 100.0
-const MAX_SHOOT_FORCE = 1500.0
-const MIN_SHOOT_FORCE = 300.0
+const MAX_SHOOT_FORCE = 800.0   # vorher 1500.0
+const MIN_SHOOT_FORCE = 150.0   # vorher 300.0
 const GRAVITY = 1200.0
 const TRAJECTORY_POINTS = 42
 const MAX_TRAJECTORY_TIME = 5.0
