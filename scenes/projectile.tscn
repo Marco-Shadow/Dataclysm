@@ -28,13 +28,13 @@ animations = [{
 }],
 "loop": true,
 "name": &"cd",
-"speed": 5.0
+"speed": 7.0
 }, {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("2_6c2e5")
 }],
-"loop": false,
+"loop": true,
 "name": &"controller",
 "speed": 5.0
 }, {
@@ -42,7 +42,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("3_pl1gp")
 }],
-"loop": true,
+"loop": false,
 "name": &"headphones",
 "speed": 5.0
 }, {
@@ -147,7 +147,7 @@ animations = [{
 collision_layer = 2
 gravity_scale = -0.1
 contact_monitor = true
-max_contacts_reported = 1
+max_contacts_reported = 8
 script = ExtResource("1_qg27n")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -156,6 +156,6 @@ shape = SubResource("CircleShape2D_586ad")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.09375, 0.0937501)
 sprite_frames = SubResource("SpriteFrames_fy6nk")
-animation = &"cd"
+animation = &"controller"
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
