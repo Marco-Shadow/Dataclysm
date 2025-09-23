@@ -1889,16 +1889,6 @@ _data = {
 &"space_released": SubResource("Animation_qnb83")
 }
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ir15t"]
-shader = ExtResource("1_lbhrr")
-shader_parameter/color_deep = Color(0.1, 0, 0.2, 1)
-shader_parameter/color_mid = Color(0.3, 0.1, 0.4, 1)
-shader_parameter/color_accent = Color(0.5, 0.2, 0.7, 1)
-shader_parameter/speed = 0.25
-shader_parameter/blur_amount = 4.0
-shader_parameter/gradient_scale = 2.5
-shader_parameter/movement = 0.4
-
 [sub_resource type="LabelSettings" id="LabelSettings_1kice"]
 font_size = 18
 font_color = Color(1, 0, 1, 1)
@@ -2011,7 +2001,6 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 texture = ExtResource("6_0tnpc")
 expand_mode = 1
-metadata/_edit_use_anchors_ = true
 
 [node name="DKeyAnimation" type="AnimationPlayer" parent="CanvasLayer/HelpMenu/VBoxContainer/Keyboard_D"]
 libraries = {
