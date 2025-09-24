@@ -103,13 +103,13 @@ func die():
 	deathSprite.play("explode")
 	
 	# Disable collision for the dead player
-	collision_layer = 0
-	collision_mask = 0
+	#collision_layer = 0
+	#collision_mask = 0
 	
 	# Disable all collision shapes
-	for child in get_children():
-		if child is CollisionShape2D or child is CollisionPolygon2D:
-			child.disabled = true
+	#for child in get_children():
+		#if child is CollisionShape2D or child is CollisionPolygon2D:
+			#child.disabled = true
 	
 	# If any Area2D nodes exist, disable their collision too
 	for child in get_children():
