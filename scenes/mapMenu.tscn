@@ -7,7 +7,7 @@
 script/source = "extends Control
 func _on_continue_pressed() -> void:
 	print(\"Start Pressed!\")
-	get_tree().change_scene_to_file(\"res://scenes/game.tscn\")
+	get_tree().change_scene_to_file(\"res://scenes/gameDay.tscn\")
 
 func _on_exit_pressed() -> void:
 	print(\"Back to menu Pressed!\")
