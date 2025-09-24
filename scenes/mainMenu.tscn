@@ -108,8 +108,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_a7hqt")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_cifys")
 theme_override_styles/hover = SubResource("StyleBoxFlat_0tj4m")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_h70hp")
-text = "Exit
-"
+text = "Exit"
 script = ExtResource("1_2mh07")
 metadata/_edit_lock_ = true
 
@@ -156,4 +155,4 @@ script = ExtResource("4_l7wge")
 
 [connection signal="pressed" from="VBoxContainer/Button" to="VBoxContainer/Button" method="_on_start_pressed"]
 [connection signal="pressed" from="VBoxContainer/Button2" to="VBoxContainer/Button2" method="_on_settings_pressed"]
-[connection signal="pressed" from="VBoxContainer/Button3" to="VBoxContainer/Button" method="_on_exit_pressed"]
+[connection signal="pressed" from="VBoxContainer/Button3" to="VBoxContainer/Button3" method="_on_exit_pressed"]
