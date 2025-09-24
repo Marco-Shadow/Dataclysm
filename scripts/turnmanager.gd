@@ -93,27 +93,35 @@ func switch_turn():
 	if one_player_remaining():
 		return
 		
-	# Get the current player's ID before switching
+	# Den aktuellen Spieler merken
 	var previous_player_id = current_player_id
 	
-	# Find the next alive player
+	# Lebenden nächsten Spieler suchen
 	var next_player_found = false
 	var try_player_id = current_player_id
 	
-	# Try up to playerCount times to find an alive player
 	for i in range(playerCount):
-		# Move to the next player (looping back to 1 if necessary)
 		try_player_id = (try_player_id % playerCount) + 1
 		
-		# If this player is alive, we've found our next player
 		if not deadplayers.has(try_player_id):
 			current_player_id = try_player_id
-			next_player_found = true		
+			next_player_found = true
 			playerInstances[current_player_id].distaceToMove = playerInstances[current_player_id].MaxMovementDistance
 			break
 	
-	# Only announce the switch if we actually changed players
-	if next_player_found and previous_player_id != current_player_id:
+	# --- Sicherstellen, dass der Spieler WECHSELT ---
+	if not next_player_found:
+		print("⚠️ Kein lebender Spieler gefunden!")
+	elif previous_player_id == current_player_id:
+		print("⚠️ Spielerwechsel fehlgeschlagen, wieder derselbe dran!")
+		# Fallback: erzwungen nächsten lebenden nehmen
+		for id in players:
+			if not deadplayers.has(id) and id != previous_player_id:
+				current_player_id = id
+				print("👉 Fallback: Zug geht jetzt an Spieler ", current_player_id)
+				break
+	
+	if previous_player_id != current_player_id:
 		print("Switched turn to player ", current_player_id)
 
 # locking movement
@@ -123,6 +131,7 @@ func lock_turn():
 func unlock_turn():
 	turn_locked = false
 	switch_turn()
+	print("Unlocked turn to other player ")
 	
 	
 # Helper function to check if all players are dead
