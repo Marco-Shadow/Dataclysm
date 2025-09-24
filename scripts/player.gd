@@ -31,6 +31,7 @@ var jetpack_refilled = true  # Start with fuel available
 
 var terrain_node
 var shoot_cooldown = 0.0
+var shoot_delay = 0.5 # zwischen schüssen
 var shoot_angle = -90
 
 # Power shooting variables
@@ -136,18 +137,19 @@ func _process(delta: float) -> void:
 	if shoot_cooldown > 0:
 		shoot_cooldown -= delta
 
+	# Nur wenn: mein Zug, lebendig, UND der Turn NICHT gelockt ist
 	if is_my_turn() and not dead and not TurnManager.turn_locked:
 		var previous_angle = shoot_angle
 		var previous_power = power_level
 
-		update_trajectory()  # Punkte zeichnen
+		update_trajectory()  # Punkte/Vorschau zeichnen
 
 		if Input.is_action_pressed("player_up"):
 			shoot_angle += 30 * delta
 		if Input.is_action_pressed("player_down"):
 			shoot_angle -= 30 * delta
 
-		# Handle charging and shooting
+		# Laden/Schießen
 		if Input.is_action_just_pressed("player_shoot"):
 			charging_power = true
 			power_level = 0.0
@@ -163,59 +165,15 @@ func _process(delta: float) -> void:
 		if previous_angle != shoot_angle or previous_power != power_level:
 			update_trajectory()
 	else:
-		# 👇 NEU: Alle Punkte löschen, wenn Spieler nicht am Zug ist
-		var dot_container = get_node_or_null("TrajectoryDots")
-		if dot_container:
-			for child in dot_container.get_children():
-				child.queue_free()
-
-	if(health <= 0 and not dead):
-		die()
-	
-	# Update cooldown timer
-	if shoot_cooldown > 0:
-		shoot_cooldown -= delta
-		
-	if is_my_turn() and not dead and not TurnManager.turn_locked: 
-		var previous_angle = shoot_angle
-		var previous_power = power_level
-		
-		update_trajectory()
-		
-		if Input.is_action_pressed("player_up"):
-			shoot_angle += 30 * delta
-		if Input.is_action_pressed("player_down"):
-			shoot_angle -= 30 * delta
-
-		
-		# Handle charging and shooting
-		if Input.is_action_just_pressed("player_shoot"):
-			# Start charging
-			charging_power = true
-			power_level = 0.0
-			update_trajectory()  # Update with charging mode enabled
-			
-		elif charging_power and Input.is_action_pressed("player_shoot"):
-			# Continue charging while button is held
-			power_level = min(power_level + power_charge_rate * delta, max_power)
-			
-		elif charging_power and Input.is_action_just_released("player_shoot"):
-			# Fire on release if we have enough power
-			if power_level >= 0.05:  # Minimum power threshold
-				do_shoot()
-			
-			# Reset charging state regardless
-			charging_power = false
-			update_trajectory()  # Update with charging mode disabled
-		
-		# Update trajectory if angle or power changed
-		if previous_angle != shoot_angle || previous_power != power_level:
-			update_trajectory()
-	else:
+		#new thing
+		charging_power = false
+		# Optional: Trajektorie ausblenden/aufräumen wenn nicht mein Zug oder gelockt
 		trajectoryLine.visible = false
+		for dot in trajectory_dots:
+			dot.queue_free()
+		trajectory_dots.clear()
 
-				
-	# Update jetpack fuel if active
+	# Jetpack-Fuel update
 	if jetpack_active:
 		jetpack_fuel -= delta
 		if jetpack_fuel <= 0:
@@ -371,11 +329,9 @@ func is_my_turn() -> bool:
 
 # This is now the internal implementation that actually creates the projectile
 func do_shoot() -> void:
-	if shoot_cooldown > 0 or dead:
+	if shoot_cooldown > 0.0 or dead or TurnManager.turn_locked:
 		return
-	if TurnManager.turn_locked:
-		return
-		
+		 
 	# Calculate force
 	var actual_force = MIN_SHOOT_FORCE + (MAX_SHOOT_FORCE - MIN_SHOOT_FORCE) * power_level
 	
@@ -383,8 +339,6 @@ func do_shoot() -> void:
 	var weapon = available_weapons[current_weapon_index]
 	
 	print("Player " + str(player_id) + " creating projectile with force " + str(actual_force) + "with weapon: " + weapon["name"])
-	#var proj_scene = preload("uid://b4kdm3lq2kp7a")
-	#var projectile = proj_scene.instantiate()
 	
 	var projectile_scene = preload("res://scenes/projectile.tscn")
 	var projectile = projectile_scene.instantiate()
@@ -394,7 +348,6 @@ func do_shoot() -> void:
 	projectile.shooter_node = self
 	
 	projectile.terrain_node = terrain_node
-	
 	
 	# Werte der Waffe ins Projektil übertragen
 	projectile.weapon_name = weapon["name"];
@@ -411,20 +364,7 @@ func do_shoot() -> void:
 	var direction = Vector2.RIGHT.rotated(angle_rad)
 	projectile.linear_velocity = direction * actual_force
 	projectile.direction = direction.normalized()
-	
-	# Calculate direction auskommentiert drunter 
-	# var angle_rad = deg_to_rad(shoot_angle)
-	# Always use the same direction calculation regardless of player flip auskommentiert drunter
-	# var direction = Vector2.RIGHT.rotated(angle_rad)
-	
-	# Apply initial velocity wurde auskommentiert
-	# projectile.linear_velocity = direction * actual_force
-	#projectile.direction = direction.normalized()
-	#projectile.terrain_node = terrain_node 
-	#projectile.shooter_id = player_id
-	#projectile.shooter_node = self
-
-	
+		
 	# Add projectile to scene
 	get_tree().get_current_scene().add_child(projectile)
 	
@@ -433,9 +373,9 @@ func do_shoot() -> void:
 	
 	# Mark that jetpack fuel should be refilled on next turn
 	jetpack_refilled = false
+	charging_power = false
 	
-	# Switch turns
-	# TurnManager.switch_turn()
+	# Lock Turn 
 	TurnManager.lock_turn()
 
 
@@ -453,13 +393,11 @@ func _select_next_weapon() -> void:
 		current_weapon_index = 0
 	_update_weapon_display()
 
-
 func _select_previous_weapon() -> void:
 	current_weapon_index -= 1
 	if current_weapon_index < 0:
 		current_weapon_index = available_weapons.size() - 1
 	_update_weapon_display()
-
 
 func _update_weapon_display() -> void:
 	# Aktuelle Waffe holen
@@ -469,21 +407,21 @@ func _update_weapon_display() -> void:
 
 
 # Public function that the turn manager can call
-func shoot_projectile() -> void:
-	# This function is kept for compatibility but now does nothing
-	# The shooting is fully handled by the player's input logic
-	var weapon = available_weapons[current_weapon_index]
-
-	# Projektil-Szene laden
-	var projectile_scene = preload("res://scenes/projectile.tscn")
-	var projectile = projectile_scene.instantiate()
-
-	# Werte der aktuellen Waffe ins Projektil übertragen
-	projectile.min_damage = weapon["min_damage"]
-	projectile.max_damage = weapon["max_damage"]
-	projectile.initial_speed = weapon["initial_speed"]
-	projectile.gravity = weapon["gravity"]
-
-	# Projektil in die Szene einfügen
-	get_tree().current_scene.add_child(projectile)
-	projectile.global_position = global_position
+#func shoot_projectile() -> void:
+	## This function is kept for compatibility but now does nothing
+	## The shooting is fully handled by the player's input logic
+	#var weapon = available_weapons[current_weapon_index]
+#
+	## Projektil-Szene laden
+	#var projectile_scene = preload("res://scenes/projectile.tscn")
+	#var projectile = projectile_scene.instantiate()
+#
+	## Werte der aktuellen Waffe ins Projektil übertragen
+	#projectile.min_damage = weapon["min_damage"]
+	#projectile.max_damage = weapon["max_damage"]
+	#projectile.initial_speed = weapon["initial_speed"]
+	#projectile.gravity = weapon["gravity"]
+#
+	## Projektil in die Szene einfügen
+	#get_tree().current_scene.add_child(projectile)
+	#projectile.global_position = global_position
