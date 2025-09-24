@@ -3,6 +3,9 @@ extends Node
 var config_file = ConfigFile.new()
 var config_path: String
 
+# Map selection
+var selected_map: String = "DAY"
+
 # Gloabl weaponlist => can be called everywhere with globalSettings.available_weapons
 var available_weapons: Array = [
 	{
