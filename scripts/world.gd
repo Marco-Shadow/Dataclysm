@@ -126,7 +126,7 @@ func generate_terrain():
 					if GlobalSettings.selected_map == "DAY":
 						polygon2d_nodes[chunk_key].color = Color(0.153, 0.573, 0.15, 1.0)
 					elif GlobalSettings.selected_map == "NIGHT":
-						polygon2d_nodes[chunk_key].color = Color(0.1, 0.1, 0.3)
+						polygon2d_nodes[chunk_key].color = Color(0.058, 0.2, 0.074, 1.0)
 					else:
 						polygon2d_nodes[chunk_key].color = Color(0.5, 0.5, 0.5)
 					floor_body.add_child(polygon2d_nodes[chunk_key])
