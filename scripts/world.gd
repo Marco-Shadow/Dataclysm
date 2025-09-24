@@ -29,14 +29,18 @@ func _ready():
 func generate_terrain():
 	# 1. Create terrain curve
 	var curve = Curve2D.new()
-	var prev_y = 0.0
+	var prev_y: float = 0.0
 	var jump_limit = 50.0
 
 	for i in range(POINT_COUNT):
 		var t = float(i) / float(POINT_COUNT - 1)
 		var x = t * WORLD_WIDTH
 		var target_y = MIN_DEPTH + randf() * (MAX_DEPTH - MIN_DEPTH)
-		var y = lerp(int(prev_y), int(target_y), 0.5)
+		var y = lerp(float(prev_y), target_y, 0.5)
+
+		# Höhenwerte auf ein Raster "snappen"
+		var step = 8  # je größer, desto blockiger (z. B. 4 = fein, 16 = sehr grob)
+		y = int(y / step) * step
 
 		if abs(y - prev_y) > jump_limit:
 			y = clamp(prev_y + sign(y - prev_y) * jump_limit, MIN_DEPTH, MAX_DEPTH)
@@ -119,7 +123,7 @@ func generate_terrain():
 					# Add visual polygon
 					polygon2d_nodes[chunk_key] = Polygon2D.new()
 					polygon2d_nodes[chunk_key].polygon = local_polygon
-					polygon2d_nodes[chunk_key].color = Color(0.2, 0.8, 0.2)
+					polygon2d_nodes[chunk_key].color = Color(0.153, 0.573, 0.15, 1.0)
 					floor_body.add_child(polygon2d_nodes[chunk_key])
 
 func _on_carve_requested(center: Vector2, radius: float) -> void:
