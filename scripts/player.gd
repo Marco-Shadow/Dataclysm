@@ -102,13 +102,13 @@ func die():
 	deathSprite.play("explode")
 	
 	# Disable collision for the dead player
-	collision_layer = 0
-	collision_mask = 0
+	#collision_layer = 0
+	#collision_mask = 0
 	
 	# Disable all collision shapes
-	for child in get_children():
-		if child is CollisionShape2D or child is CollisionPolygon2D:
-			child.disabled = true
+	#for child in get_children():
+		#if child is CollisionShape2D or child is CollisionPolygon2D:
+			#child.disabled = true
 	
 	# If any Area2D nodes exist, disable their collision too
 	for child in get_children():
@@ -136,7 +136,7 @@ func _process(delta: float) -> void:
 	if shoot_cooldown > 0:
 		shoot_cooldown -= delta
 
-	if is_my_turn() and not dead:
+	if is_my_turn() and not dead and not TurnManager.turn_locked:
 		var previous_angle = shoot_angle
 		var previous_power = power_level
 
@@ -176,7 +176,7 @@ func _process(delta: float) -> void:
 	if shoot_cooldown > 0:
 		shoot_cooldown -= delta
 		
-	if is_my_turn() and not dead:
+	if is_my_turn() and not dead and not TurnManager.turn_locked: 
 		var previous_angle = shoot_angle
 		var previous_power = power_level
 		
@@ -313,7 +313,7 @@ func _physics_process(delta: float) -> void:
 		velocity.y += GRAVITY * delta
 	
 	# Return early if it's not this player's turn
-	if not is_my_turn():
+	if not is_my_turn() or TurnManager.turn_locked:
 		velocity.x = 0
 		move_and_slide()
 		return
@@ -372,6 +372,8 @@ func is_my_turn() -> bool:
 # This is now the internal implementation that actually creates the projectile
 func do_shoot() -> void:
 	if shoot_cooldown > 0 or dead:
+		return
+	if TurnManager.turn_locked:
 		return
 		
 	# Calculate force
@@ -433,7 +435,9 @@ func do_shoot() -> void:
 	jetpack_refilled = false
 	
 	# Switch turns
-	TurnManager.switch_turn()
+	# TurnManager.switch_turn()
+	TurnManager.lock_turn()
+
 
 # weapon functions
 func _input(event: InputEvent) -> void:
