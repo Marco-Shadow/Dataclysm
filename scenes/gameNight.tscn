@@ -2,6 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://csa5wg3bw580j" path="res://scenes/player.tscn" id="1_oxd0a"]
 [ext_resource type="Script" uid="uid://7yc6qyhcfmx5" path="res://scripts/world.gd" id="2_2shgi"]
+[ext_resource type="Texture2D" uid="uid://bk3p6e6bj841n" path="res://assets/Background/SterneAnimation-Sheet.png" id="3_0xawl"]
+[ext_resource type="Script" uid="uid://c1cy3mtlfijn" path="res://scenes/Night_Background.gd" id="4_korrc"]
 [ext_resource type="Texture2D" uid="uid://ca5n4on7l32uc" path="res://assets/Double/keyboard_a_outline.png" id="4_lbhrr"]
 [ext_resource type="Texture2D" uid="uid://c31jthhvejtul" path="res://assets/Double/keyboard_w_outline.png" id="4_u5sy4"]
 [ext_resource type="Script" uid="uid://jf8iirfqjcm2" path="res://scripts/Keyboard_Overlay.gd" id="4_vtaks"]
@@ -21,6 +23,68 @@
 [ext_resource type="Texture2D" uid="uid://534fkvnklswn" path="res://assets/Double/keyboard_ctrl.png" id="14_ssvqc"]
 [ext_resource type="Script" uid="uid://cp1kkxssdmc0t" path="res://scripts/hud.gd" id="19_1kice"]
 [ext_resource type="Script" uid="uid://culrje8qj21e4" path="res://scenes/weapon_ui.gd" id="20_5newe"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_korrc"]
+atlas = ExtResource("3_0xawl")
+region = Rect2(0, 0, 1536, 1024)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_phf2f"]
+atlas = ExtResource("3_0xawl")
+region = Rect2(1536, 0, 1536, 1024)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ss50m"]
+atlas = ExtResource("3_0xawl")
+region = Rect2(3072, 0, 1536, 1024)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dgciu"]
+atlas = ExtResource("3_0xawl")
+region = Rect2(4608, 0, 1536, 1024)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d24i6"]
+atlas = ExtResource("3_0xawl")
+region = Rect2(6144, 0, 1536, 1024)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0rawi"]
+atlas = ExtResource("3_0xawl")
+region = Rect2(7680, 0, 1536, 1024)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_24hao"]
+atlas = ExtResource("3_0xawl")
+region = Rect2(9216, 0, 1536, 1024)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_sappn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_korrc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_phf2f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ss50m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dgciu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d24i6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0rawi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_24hao")
+}],
+"loop": true,
+"name": &"Stars",
+"speed": 1.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_u8gkx"]
 distance = -26.3102
@@ -406,6 +470,15 @@ script = ExtResource("2_2shgi")
 game = NodePath("..")
 player_scene = ExtResource("1_oxd0a")
 camera = NodePath("../Camera2D")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="world"]
+position = Vector2(575.75, 324.00003)
+scale = Vector2(0.75032556, 0.63281256)
+sprite_frames = SubResource("SpriteFrames_sappn")
+animation = &"Stars"
+frame = 5
+frame_progress = 0.5809559
+script = ExtResource("4_korrc")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 collision_layer = 6

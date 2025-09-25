@@ -123,7 +123,12 @@ func generate_terrain():
 					# Add visual polygon
 					polygon2d_nodes[chunk_key] = Polygon2D.new()
 					polygon2d_nodes[chunk_key].polygon = local_polygon
-					polygon2d_nodes[chunk_key].color = Color(0.153, 0.573, 0.15, 1.0)
+					if GlobalSettings.selected_map == "DAY":
+						polygon2d_nodes[chunk_key].color = Color(0.153, 0.573, 0.15, 1.0)
+					elif GlobalSettings.selected_map == "NIGHT":
+						polygon2d_nodes[chunk_key].color = Color(0.058, 0.2, 0.074, 1.0)
+					else:
+						polygon2d_nodes[chunk_key].color = Color(0.5, 0.5, 0.5)
 					floor_body.add_child(polygon2d_nodes[chunk_key])
 
 func _on_carve_requested(center: Vector2, radius: float) -> void:
