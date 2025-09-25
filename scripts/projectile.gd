@@ -123,3 +123,7 @@ func _exit_tree() -> void:
 	if TurnManager.turn_locked and not already_unlocked:
 		TurnManager.unlock_turn()
 		already_unlocked = true
+
+
+func _on_visible_on_screen_notifier_2d_screen_exited() -> void:
+	queue_free()
