@@ -20,6 +20,11 @@ var dead = false
 var distaceToMove := MaxMovementDistance 
 @onready var movementBar = $MovementBar 
 
+#Bot variables
+@export var is_bot: bool = false   # true = dieser Player ist ein Bot
+var bot_has_shot: bool = false
+var was_my_turn_last_frame: bool = false
+
 # Jetpack variables
 @onready var fuel_bar = $FuelBar
 var jetpack_active = false
@@ -61,12 +66,9 @@ func _ready() -> void:
 	
 	# Select a random animation for the projectile
 	if sprite and sprite is AnimatedSprite2D:
-		# Get all available animations
 		var animations = sprite.sprite_frames.get_animation_names()
 		if animations.size() > 0:
-			# Select a random animation
 			var random_animation = animations[randi() % animations.size()]
-			# Play the selected animation
 			sprite.play(random_animation)
 	
 	# Set up trajectory line
@@ -76,7 +78,7 @@ func _ready() -> void:
 		trajectoryLine = Line2D.new()
 		trajectoryLine.name = "TrajectoryLine"
 		trajectoryLine.width = 2.0
-		trajectoryLine.default_color = Color(1, 1, 1, 0.5)  # Semi-transparent white
+		trajectoryLine.default_color = Color(1, 1, 1, 0.5)
 		trajectoryLine.begin_cap_mode = Line2D.LINE_CAP_ROUND
 		trajectoryLine.end_cap_mode = Line2D.LINE_CAP_ROUND
 		trajectoryLine.antialiased = true
@@ -98,26 +100,13 @@ func _ready() -> void:
 func die():
 	dead = true
 	health = 0
-	#sprite.visible = false
 	trajectoryLine.visible = false
 	deathSprite.play("explode")
 	
-	# Disable collision for the dead player
-	#collision_layer = 0
-	#collision_mask = 0
-	
-	# Disable all collision shapes
-	#for child in get_children():
-		#if child is CollisionShape2D or child is CollisionPolygon2D:
-			#child.disabled = true
-	
-	# If any Area2D nodes exist, disable their collision too
 	for child in get_children():
 		if child is Area2D:
 			child.collision_layer = 0
 			child.collision_mask = 0
-			
-			# Disable all collision shapes in the Area2D
 			for area_child in child.get_children():
 				if area_child is CollisionShape2D or area_child is CollisionPolygon2D:
 					area_child.disabled = true
@@ -129,27 +118,39 @@ func die():
 func damage(amount):
 	health = max(0, health - amount)
 
+# ✅ FIX: hier war vorher "die()" → jetzt Health-Check
 func _process(delta: float) -> void:
-	if (health <= 0 and not dead):
+	if health <= 0.0 and not dead:
 		die()
-
-	# Update cooldown timer
+		
 	if shoot_cooldown > 0:
 		shoot_cooldown -= delta
+	
+	# --- Turn-Start-Erkennung nur für Bot ---
+	if is_bot:
+		var now_my_turn := is_my_turn()
+		if now_my_turn and not was_my_turn_last_frame:
+			bot_has_shot = false
+		was_my_turn_last_frame = now_my_turn
+	
+	# --- Bot übernimmt hier ---
+	if is_bot and is_my_turn() and not bot_has_shot and not dead and not TurnManager.turn_locked:
+		print("Bot ist am Zug → _bot_tick wird aufgerufen")
+		_bot_tick(delta)
+		return
 
-	# Nur wenn: mein Zug, lebendig, UND der Turn NICHT gelockt ist
-	if is_my_turn() and not dead and not TurnManager.turn_locked:
+	# --- Spieler-Input ---
+	if not is_bot and is_my_turn() and not dead and not TurnManager.turn_locked:
 		var previous_angle = shoot_angle
 		var previous_power = power_level
 
-		update_trajectory()  # Punkte/Vorschau zeichnen
+		update_trajectory()
 
 		if Input.is_action_pressed("player_up"):
 			shoot_angle += 30 * delta
 		if Input.is_action_pressed("player_down"):
 			shoot_angle -= 30 * delta
 
-		# Laden/Schießen
 		if Input.is_action_just_pressed("player_shoot"):
 			charging_power = true
 			power_level = 0.0
@@ -165,15 +166,12 @@ func _process(delta: float) -> void:
 		if previous_angle != shoot_angle or previous_power != power_level:
 			update_trajectory()
 	else:
-		#new thing
 		charging_power = false
-		# Optional: Trajektorie ausblenden/aufräumen wenn nicht mein Zug oder gelockt
 		trajectoryLine.visible = false
 		for dot in trajectory_dots:
 			dot.queue_free()
 		trajectory_dots.clear()
 
-	# Jetpack-Fuel update
 	if jetpack_active:
 		jetpack_fuel -= delta
 		if jetpack_fuel <= 0:
@@ -181,7 +179,6 @@ func _process(delta: float) -> void:
 			jetpack_fuel = 0
 
 func update_trajectory():
-	# --- ALTE PUNKTE LÖSCHEN ---
 	for dot in trajectory_dots:
 		dot.queue_free()
 	trajectory_dots.clear()
@@ -192,9 +189,6 @@ func update_trajectory():
 	var direction = Vector2.RIGHT.rotated(angle_rad)
 	var time_step = 0.008
 	
-	# --------------------------------------------------------
-	# 1. Wenn Spieler gerade auflädt -> volle Vorschau
-	# --------------------------------------------------------
 	if charging_power:
 		var actual_force = MIN_SHOOT_FORCE + (MAX_SHOOT_FORCE - MIN_SHOOT_FORCE) * power_level
 		var vel = direction * actual_force
@@ -204,31 +198,24 @@ func update_trajectory():
 			vel.y += GRAVITY * time_step
 			pos += vel * time_step
 			
-			# --- Punkte erzeugen ---
 			var dot = ColorRect.new()
-			dot.color = Color(0.8, 0.8, 0.8, 1)  # grau
-			var size = max(1.5, 6.0 - i * 0.20)   # Punkte schrumpfen
+			dot.color = Color(0.8, 0.8, 0.8, 1)
+			var size = max(1.5, 6.0 - i * 0.20)
 			dot.size = Vector2(size, size)
 			dot.position = pos
 			add_child(dot)
 			trajectory_dots.append(dot)
-	
-	# --------------------------------------------------------
-	# 2. Wenn Spieler NICHT auflädt -> kurze Richtungs-Vorschau
-	# --------------------------------------------------------
 	else:
 		var preview_force = MIN_SHOOT_FORCE + (MAX_SHOOT_FORCE - MIN_SHOOT_FORCE) * 0.75
 		var vel = direction * preview_force
 		var pos = projectile_offset
 		
-		for i in range(1, 6):  # nur 5 Punkte -> kurze Linie
+		for i in range(1, 6):
 			vel.y += GRAVITY * time_step
 			pos += vel * time_step
 			
 			var dot = ColorRect.new()
 			dot.color = Color(0.8, 0.8, 0.8, 1)
-			
-			# Punkte starten groß und verschwinden schnell
 			var size = max(0.0, 6.0 - i * 1.5)
 			if size <= 0:
 				break
@@ -238,39 +225,24 @@ func update_trajectory():
 			add_child(dot)
 			trajectory_dots.append(dot)
 
-
-
-func apply_dotted_effect():
-	var points = trajectoryLine.get_point_count()
-	var visible_points = []
-	
-	for i in range(points):
-		if i % 2 == 0:  # Only keep even-indexed points
-			visible_points.append(trajectoryLine.get_point_position(i))
-	
-	trajectoryLine.clear_points()
-	for point in visible_points:
-		trajectoryLine.add_point(point)
-
+# ✅ FIX: Bot ignoriert hier Eingaben und bewegt sich nur über _bot_tick
 func _physics_process(delta: float) -> void:
 	HealthBar.value = health
-
 	fuel_bar.value = jetpack_fuel
 
-	# Check if jetpack is activated
-	if is_my_turn() and Input.is_action_pressed("player_jetpack") and jetpack_fuel > 0:
+	if is_my_turn() and Input.is_action_pressed("player_jetpack") and jetpack_fuel > 0 and not is_bot:
 		jetpack_active = true
-		jetpack_fuel -= delta   # hier wird Treibstoff abgezogen
+		jetpack_fuel -= delta
+	elif is_bot:
+		pass # Bot steuert jetpack in _bot_tick()
 	else:
 		jetpack_active = false
 		
-	# Apply jetpack force when active
 	if jetpack_active:
 		velocity.y = -JETPACK_FORCE
 	elif not is_on_floor():
 		velocity.y += GRAVITY * delta
 	
-	# Return early if it's not this player's turn
 	if not is_my_turn() or TurnManager.turn_locked:
 		velocity.x = 0
 		move_and_slide()
@@ -279,43 +251,37 @@ func _physics_process(delta: float) -> void:
 	if dead:
 		return
 	
-	# Check if this is a new turn for the player
 	if not jetpack_refilled and is_my_turn():
 		jetpack_fuel = JETPACK_MAX_FUEL
 		jetpack_refilled = true
+
+	# ✅ BOT ignoriert Player Input
+	if is_bot:
+		move_and_slide()
+		return
 	
-	# ---- ORIGINAL MOVEMENT CODE FROM YOUR SCRIPT ----
 	var direction := Input.get_axis("player_left", "player_right")
-	
-	var was_flipped = sprite.flip_h
 	
 	if direction < 0:
 		sprite.flip_h = true
 	elif direction > 0:
 		sprite.flip_h = false
 		
-	# No need to update trajectory when player flips anymore
-	
 	if direction != 0:
 		velocity.x = direction * SPEED		
 	else:
 		velocity.x = 0
 		
-	# Richtung als -1 / 0 / 1
-	
 	if direction != 0 and distaceToMove > 0.0:
-		# Strecke, die wir *würden* zurücklegen in diesem Frame
 		var distance_this_frame: float = abs(velocity.x) * delta
 
 		if distance_this_frame >= distaceToMove:
-			# nur noch die restliche Distanz zulassen (verhindert negatives distaceToMove)
 			var allowed_ratio := 0.0
 			if distance_this_frame != 0.0:
 				allowed_ratio = distaceToMove / distance_this_frame
 			velocity.x = velocity.x * allowed_ratio
 			distaceToMove = 0.0
 		else:
-			# normalen Move erlauben und Distanz reduzieren
 			distaceToMove -= distance_this_frame
 	else:
 		velocity.x = 0.0
@@ -323,19 +289,14 @@ func _physics_process(delta: float) -> void:
 	movementBar.value = distaceToMove
 	move_and_slide()
 
-
 func is_my_turn() -> bool:
 	return TurnManager.current_player_id == player_id
 
-# This is now the internal implementation that actually creates the projectile
 func do_shoot() -> void:
 	if shoot_cooldown > 0.0 or dead or TurnManager.turn_locked:
 		return
 		 
-	# Calculate force
 	var actual_force = MIN_SHOOT_FORCE + (MAX_SHOOT_FORCE - MIN_SHOOT_FORCE) * power_level
-	
-	# Aktuelle Waffe holen
 	var weapon = available_weapons[current_weapon_index]
 	
 	print("Player " + str(player_id) + " creating projectile with force " + str(actual_force) + "with weapon: " + weapon["name"])
@@ -343,50 +304,39 @@ func do_shoot() -> void:
 	var projectile_scene = preload("res://scenes/projectile.tscn")
 	var projectile = projectile_scene.instantiate()
 	
-	# set shooter infos settings
 	projectile.shooter_id = player_id
 	projectile.shooter_node = self
-	
 	projectile.terrain_node = terrain_node
 	
-	# Werte der Waffe ins Projektil übertragen
 	projectile.weapon_name = weapon["name"];
 	projectile.min_damage = weapon["min_damage"]
 	projectile.max_damage = weapon["max_damage"]
 	projectile.initial_speed = weapon["initial_speed"]
 	projectile.gravity = weapon["gravity"]
 	
-	# Use the same offset as in trajectory calculation
 	projectile.position = global_position + projectile_offset
 	
-	# Richtung berechnen
 	var angle_rad = deg_to_rad(shoot_angle)
 	var direction = Vector2.RIGHT.rotated(angle_rad)
 	projectile.linear_velocity = direction * actual_force
 	projectile.direction = direction.normalized()
 		
-	# Add projectile to scene
 	get_tree().get_current_scene().add_child(projectile)
 	
-	# Set cooldown
 	shoot_cooldown = 1.0
-	
-	# Mark that jetpack fuel should be refilled on next turn
 	jetpack_refilled = false
 	charging_power = false
-	
-	# Lock Turn 
 	TurnManager.lock_turn()
 
-
-# weapon functions
+# ✅ FIX: Bot ignoriert _input komplett
 func _input(event: InputEvent) -> void:
+	if is_bot:
+		return
 	if event.is_action_pressed("weapon_next"):
 		_select_next_weapon()
 	elif event.is_action_pressed("weapon_prev"):
 		_select_previous_weapon()
 
-# Waffenwechsel zuständige Funktionen
 func _select_next_weapon() -> void:
 	current_weapon_index += 1
 	if current_weapon_index >= available_weapons.size():
@@ -400,28 +350,87 @@ func _select_previous_weapon() -> void:
 	_update_weapon_display()
 
 func _update_weapon_display() -> void:
-	# Aktuelle Waffe holen
 	var weapon = available_weapons[current_weapon_index]
-	# HUD aktualisieren
 	hud.update_weapon(weapon["name"], weapon["icon"])
 
+# --- BOT FUNKTION bleibt unverändert ---
+func _bot_tick(_delta: float) -> void:
+	if not is_my_turn() or dead or TurnManager.turn_locked:
+		return
+	if bot_has_shot:
+		return
 
-# Public function that the turn manager can call
-#func shoot_projectile() -> void:
-	## This function is kept for compatibility but now does nothing
-	## The shooting is fully handled by the player's input logic
-	#var weapon = available_weapons[current_weapon_index]
-#
-	## Projektil-Szene laden
-	#var projectile_scene = preload("res://scenes/projectile.tscn")
-	#var projectile = projectile_scene.instantiate()
-#
-	## Werte der aktuellen Waffe ins Projektil übertragen
-	#projectile.min_damage = weapon["min_damage"]
-	#projectile.max_damage = weapon["max_damage"]
-	#projectile.initial_speed = weapon["initial_speed"]
-	#projectile.gravity = weapon["gravity"]
-#
-	## Projektil in die Szene einfügen
-	#get_tree().current_scene.add_child(projectile)
-	#projectile.global_position = global_position
+	var target: CharacterBody2D = TurnManager.get_player(1)
+	if target == null or target.dead:
+		return
+
+	# Kleine Bewegung Richtung Ziel
+	var dx = target.global_position.x - global_position.x
+	if abs(dx) > 50:
+		if dx > 0:
+			velocity.x = SPEED
+		else:
+			velocity.x = -SPEED
+		jetpack_active = true
+		jetpack_fuel = max(jetpack_fuel - _delta, 0.0)
+		await get_tree().create_timer(0.7).timeout
+		velocity.x = 0
+		jetpack_active = false
+
+	# Projektil-Parameter
+	var weapon = available_weapons[current_weapon_index]
+	var g: float = 1000.0
+	if weapon.has("gravity"):
+		g = float(weapon["gravity"])
+
+	var v_min: float = MIN_SHOOT_FORCE
+	var v_max: float = MAX_SHOOT_FORCE
+
+	dx = target.global_position.x - global_position.x
+	var dy: float = target.global_position.y - global_position.y
+
+	var ax: float = abs(dx)
+	var dy_math: float = -dy
+
+	var found := false
+	var theta_math := 0.0
+	var chosen_power := 0.6
+
+	for p in range(40, 101, 5):
+		var power: float = float(p) / 100.0
+		var v: float = v_min + (v_max - v_min) * power
+		var v2: float = v * v
+
+		var disc: float = v2 * v2 - g * (g * ax * ax + 2.0 * dy_math * v2)
+		if disc < 0.0:
+			continue
+
+		var root: float = sqrt(disc)
+		var theta_low := atan((v2 - root) / (g * ax))
+		theta_math = theta_low
+
+		if dx < 0.0:
+			theta_math = PI - theta_low
+
+		chosen_power = power
+		found = true
+		break
+
+	if not found:
+		var safe_dx: float = dx
+		if dx == 0.0:
+			safe_dx = 1.0
+		shoot_angle = rad_to_deg(atan2(-220.0, safe_dx))
+		power_level = 0.65
+		do_shoot()
+		bot_has_shot = true
+		return
+
+	var theta_godot := -theta_math
+	shoot_angle = rad_to_deg(theta_godot)
+	power_level = chosen_power
+
+	do_shoot()
+	bot_has_shot = true
+
+	print("Bot Schuss -> angle:", shoot_angle, " power:", power_level, " g:", g, " dx:", dx, " dy:", dy)
