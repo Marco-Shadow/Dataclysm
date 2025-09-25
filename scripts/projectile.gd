@@ -35,6 +35,9 @@ var weapon_name: String = "cd" #standard wert ist cd
 
 var velocity: Vector2 = Vector2.ZERO
 
+var already_unlocked: bool = false
+
+
 # --- Ready ---
 func _ready() -> void:
 	var animated_sprite = get_node_or_null("AnimatedSprite2D")
@@ -109,7 +112,9 @@ func _on_body_entered(body: Node) -> void:
 		if terrain_node:
 			terrain_node.emit_signal("carve_requested", terrain_node.to_local(global_position), 50.0)
 		queue_free()
-		TurnManager.unlock_turn()
+		if not already_unlocked:
+			TurnManager.unlock_turn()
+			already_unlocked = true
 	
 	if body.is_in_group("Players"):
 		var player_id = body.player_id
@@ -118,9 +123,17 @@ func _on_body_entered(body: Node) -> void:
 			var damage_amount = calculate_damage()
 			player.damage(damage_amount)
 		queue_free()
-		TurnManager.unlock_turn()
+		#this is new 
+		if not already_unlocked:
+			TurnManager.unlock_turn()
+			already_unlocked = true
 
 func _exit_tree() -> void:
-	# Sicherheit: falls das Projektil auf andere Weise entfernt wird
-	if TurnManager.turn_locked:
+	# Nur entsperren, wenn es bisher nicht passiert ist
+	if TurnManager.turn_locked and not already_unlocked:
 		TurnManager.unlock_turn()
+		already_unlocked = true
+		
+		
+		
+		
