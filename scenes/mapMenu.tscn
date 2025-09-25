@@ -1,7 +1,12 @@
-[gd_scene load_steps=8 format=3 uid="uid://bchq7bwbewfn5"]
+[gd_scene load_steps=13 format=3 uid="uid://bchq7bwbewfn5"]
 
 [ext_resource type="Script" uid="uid://ck7u1nvybtoqr" path="res://scenes/maps.gd" id="1_n76px"]
-[ext_resource type="Texture2D" uid="uid://d21kabh4uv0c3" path="res://assets/Maps/Lama.jpg" id="1_ues1n"]
+[ext_resource type="Texture2D" uid="uid://cb7hestlbfbs1" path="res://assets/Maps/Thumbnail_Day.png" id="2_x68ut"]
+[ext_resource type="Texture2D" uid="uid://c8edepgsvdngx" path="res://assets/Maps/Thumbnail_Day_Hover.png" id="3_gg7u8"]
+[ext_resource type="Texture2D" uid="uid://cvyhwsr01w6yk" path="res://assets/Maps/Thumbnail_Night.png" id="4_8dk48"]
+[ext_resource type="Texture2D" uid="uid://dvtc3clkqiu0v" path="res://assets/Maps/Thumbnail_Night_Hover.png" id="5_ar1i0"]
+[ext_resource type="Texture2D" uid="uid://cop7ujto2solo" path="res://assets/Maps/Thumbnail_Random.png" id="6_ckmfj"]
+[ext_resource type="Texture2D" uid="uid://cjq3gtqo6ktkl" path="res://assets/Maps/Thumbnail_Random_Hover.png" id="7_hubpt"]
 
 [sub_resource type="GDScript" id="GDScript_8jies"]
 script/source = "extends Control
@@ -76,7 +81,8 @@ theme_override_constants/separation = 20
 
 [node name="MapButtonDay" type="TextureButton" parent="Background/VBoxContainer/Maps/Tag"]
 layout_mode = 2
-texture_normal = ExtResource("1_ues1n")
+texture_normal = ExtResource("2_x68ut")
+texture_hover = ExtResource("3_gg7u8")
 
 [node name="Label" type="Label" parent="Background/VBoxContainer/Maps/Tag"]
 layout_mode = 2
@@ -90,7 +96,8 @@ theme_override_constants/separation = 20
 
 [node name="MapButtonNight" type="TextureButton" parent="Background/VBoxContainer/Maps/Nacht"]
 layout_mode = 2
-texture_normal = ExtResource("1_ues1n")
+texture_normal = ExtResource("4_8dk48")
+texture_hover = ExtResource("5_ar1i0")
 
 [node name="Label" type="Label" parent="Background/VBoxContainer/Maps/Nacht"]
 layout_mode = 2
@@ -104,7 +111,8 @@ theme_override_constants/separation = 20
 
 [node name="MapButtonRandom" type="TextureButton" parent="Background/VBoxContainer/Maps/Random"]
 layout_mode = 2
-texture_normal = ExtResource("1_ues1n")
+texture_normal = ExtResource("6_ckmfj")
+texture_hover = ExtResource("7_hubpt")
 
 [node name="Random" type="Label" parent="Background/VBoxContainer/Maps/Random"]
 layout_mode = 2

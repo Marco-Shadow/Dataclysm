@@ -10,10 +10,10 @@ var selected_map: String = "DAY"
 var available_weapons: Array = [
 	{
 		"name": "cd",
-		"min_damage": 5, "max_damage": 15,
+		"min_damage": 5, "max_damage": 12,
 		"min_velocity_for_damage": 50, "max_velocity_for_damage": 500,
-		"initial_speed": 700.0,
-		"gravity": 900.0,
+		"initial_speed": 950.0,
+		"gravity": 750.0,
 		"rotation_speed_multiplier": 0.02,
 		"enable_trace": true,
 		"trace_dot_interval": 0.04, "trace_dot_lifetime": 0.8,
@@ -22,10 +22,10 @@ var available_weapons: Array = [
 	},
 	{
 		"name": "controller",
-		"min_damage": 15, "max_damage": 30,
+		"min_damage": 10, "max_damage": 18,
 		"min_velocity_for_damage": 80, "max_velocity_for_damage": 700,
-		"initial_speed": 800.0,
-		"gravity": 1000.0,
+		"initial_speed": 850.0,
+		"gravity": 950.0,
 		"rotation_speed_multiplier": 0.015,
 		"enable_trace": true,
 		"trace_dot_interval": 0.06, "trace_dot_lifetime": 1.2,
@@ -34,10 +34,10 @@ var available_weapons: Array = [
 	},
 	{
 		"name": "headphones",
-		"min_damage": 8, "max_damage": 20,
+		"min_damage": 7, "max_damage": 15,
 		"min_velocity_for_damage": 60, "max_velocity_for_damage": 600,
-		"initial_speed": 750.0,
-		"gravity": 950.0,
+		"initial_speed": 820.0,
+		"gravity": 1000.0,
 		"rotation_speed_multiplier": 0.02,
 		"enable_trace": true,
 		"trace_dot_interval": 0.05, "trace_dot_lifetime": 1.0,
@@ -46,20 +46,20 @@ var available_weapons: Array = [
 	},
 	{
 		"name": "joystick",
-		"min_damage": 20, "max_damage": 45,
+		"min_damage": 12, "max_damage": 20,
 		"min_velocity_for_damage": 100, "max_velocity_for_damage": 800,
-		"initial_speed": 900.0,
-		"gravity": 1100.0,
+		"initial_speed": 780.0,
+		"gravity": 1150.0,
 		"rotation_speed_multiplier": 0.012,
 		"enable_trace": false,
 		"icon": preload("res://assets/projectiles/joystick.png")
 	},
 	{
 		"name": "keyboard",
-		"min_damage": 25, "max_damage": 60,
+		"min_damage": 15, "max_damage": 22,
 		"min_velocity_for_damage": 120, "max_velocity_for_damage": 900,
-		"initial_speed": 950.0,
-		"gravity": 750.0,
+		"initial_speed": 800.0,
+		"gravity": 1150.0,
 		"rotation_speed_multiplier": 0.025,
 		"enable_trace": true,
 		"trace_dot_interval": 0.07, "trace_dot_lifetime": 1.4,
@@ -68,10 +68,10 @@ var available_weapons: Array = [
 	},
 	{
 		"name": "laptop",
-		"min_damage": 40, "max_damage": 80,
+		"min_damage": 18, "max_damage": 25,
 		"min_velocity_for_damage": 150, "max_velocity_for_damage": 1000,
-		"initial_speed": 850.0,
-		"gravity": 1200.0,
+		"initial_speed": 750.0,
+		"gravity": 1250.0,
 		"rotation_speed_multiplier": 0.008,
 		"enable_trace": true,
 		"trace_dot_interval": 0.05, "trace_dot_lifetime": 1.0,
@@ -80,20 +80,20 @@ var available_weapons: Array = [
 	},
 	{
 		"name": "mainboard",
-		"min_damage": 30, "max_damage": 70,
+		"min_damage": 12, "max_damage": 20,
 		"min_velocity_for_damage": 120, "max_velocity_for_damage": 900,
-		"initial_speed": 800.0,
-		"gravity": 1000.0,
+		"initial_speed": 740.0,
+		"gravity": 1200.0,
 		"rotation_speed_multiplier": 0.01,
 		"enable_trace": false,
 		"icon": preload("res://assets/projectiles/mainboard.png")
 	},
 	{
 		"name": "mic",
-		"min_damage": 12, "max_damage": 35,
+		"min_damage": 6, "max_damage": 14,
 		"min_velocity_for_damage": 60, "max_velocity_for_damage": 700,
-		"initial_speed": 750.0,
-		"gravity": 900.0,
+		"initial_speed": 970.0,
+		"gravity": 800.0,
 		"rotation_speed_multiplier": 0.02,
 		"enable_trace": true,
 		"trace_dot_interval": 0.03, "trace_dot_lifetime": 0.7,
@@ -102,10 +102,10 @@ var available_weapons: Array = [
 	},
 	{
 		"name": "monitor",
-		"min_damage": 50, "max_damage": 100,
+		"min_damage": 20, "max_damage": 30,
 		"min_velocity_for_damage": 180, "max_velocity_for_damage": 1200,
-		"initial_speed": 950.0,
-		"gravity": 1300.0,
+		"initial_speed": 720.0,
+		"gravity": 1350.0,
 		"rotation_speed_multiplier": 0.005,
 		"enable_trace": true,
 		"trace_dot_interval": 0.1, "trace_dot_lifetime": 2.0,
@@ -114,10 +114,10 @@ var available_weapons: Array = [
 	},
 	{
 		"name": "mouse",
-		"min_damage": 8, "max_damage": 25,
+		"min_damage": 5, "max_damage": 10,
 		"min_velocity_for_damage": 40, "max_velocity_for_damage": 500,
-		"initial_speed": 700.0,
-		"gravity": 850.0,
+		"initial_speed": 1000.0,
+		"gravity": 750.0,
 		"rotation_speed_multiplier": 0.03,
 		"enable_trace": true,
 		"trace_dot_interval": 0.02, "trace_dot_lifetime": 0.5,
@@ -126,10 +126,10 @@ var available_weapons: Array = [
 	},
 	{
 		"name": "pc",
-		"min_damage": 60, "max_damage": 120,
+		"min_damage": 22, "max_damage": 30,
 		"min_velocity_for_damage": 180, "max_velocity_for_damage": 1400,
-		"initial_speed": 1000.0,
-		"gravity": 1400.0,
+		"initial_speed": 700.0,
+		"gravity": 1350.0,
 		"rotation_speed_multiplier": 0.004,
 		"enable_trace": true,
 		"trace_dot_interval": 0.1, "trace_dot_lifetime": 2.5,
@@ -138,9 +138,9 @@ var available_weapons: Array = [
 	},
 	{
 		"name": "ram",
-		"min_damage": 20, "max_damage": 50,
+		"min_damage": 10, "max_damage": 18,
 		"min_velocity_for_damage": 80, "max_velocity_for_damage": 800,
-		"initial_speed": 800.0,
+		"initial_speed": 860.0,
 		"gravity": 950.0,
 		"rotation_speed_multiplier": 0.015,
 		"enable_trace": true,
@@ -150,10 +150,10 @@ var available_weapons: Array = [
 	},
 	{
 		"name": "rtx",
-		"min_damage": 80, "max_damage": 150,
+		"min_damage": 20, "max_damage": 30,
 		"min_velocity_for_damage": 200, "max_velocity_for_damage": 1500,
-		"initial_speed": 1100.0,
-		"gravity": 1200.0,
+		"initial_speed": 730.0,
+		"gravity": 1300.0,
 		"rotation_speed_multiplier": 0.006,
 		"enable_trace": true,
 		"trace_dot_interval": 0.08, "trace_dot_lifetime": 1.8,
@@ -162,9 +162,9 @@ var available_weapons: Array = [
 	},
 	{
 		"name": "smartphone",
-		"min_damage": 18, "max_damage": 45,
+		"min_damage": 8, "max_damage": 16,
 		"min_velocity_for_damage": 80, "max_velocity_for_damage": 800,
-		"initial_speed": 850.0,
+		"initial_speed": 840.0,
 		"gravity": 950.0,
 		"rotation_speed_multiplier": 0.012,
 		"enable_trace": true,
@@ -174,10 +174,10 @@ var available_weapons: Array = [
 	},
 	{
 		"name": "usb",
-		"min_damage": 10, "max_damage": 20,
+		"min_damage": 5, "max_damage": 8,
 		"min_velocity_for_damage": 30, "max_velocity_for_damage": 400,
-		"initial_speed": 650.0,
-		"gravity": 800.0,
+		"initial_speed": 1050.0,
+		"gravity": 700.0,
 		"rotation_speed_multiplier": 0.03,
 		"enable_trace": true,
 		"trace_dot_interval": 0.02, "trace_dot_lifetime": 0.6,
@@ -186,6 +186,28 @@ var available_weapons: Array = [
 	}
 ]
 
+# stabile Charakterwahl pro Spieler
+var player_characters := {}         # { player_id: "adventurer" }
+var _rand_seeded := false
+
+func ensure_player_character(player_id: int, pool: Array) -> String:
+	if not player_characters.has(player_id):
+		if not _rand_seeded:
+			randomize()
+			_rand_seeded = true
+		player_characters[player_id] = pool[randi() % pool.size()]
+	return player_characters[player_id]
+
+func set_player_character(player_id: int, name: String) -> void:
+	player_characters[player_id] = name
+
+func get_player_character(player_id: int, pool: Array) -> String:
+	if player_characters.has(player_id):
+		return player_characters[player_id]
+	return ensure_player_character(player_id, pool)
+
+func clear_player_characters() -> void:
+	player_characters.clear()
 
 
 func _ready() -> void:

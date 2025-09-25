@@ -1,4 +1,4 @@
-[gd_scene load_steps=269 format=3 uid="uid://dtwxdvapltg42"]
+[gd_scene load_steps=270 format=3 uid="uid://dtwxdvapltg42"]
 
 [ext_resource type="Script" uid="uid://7yc6qyhcfmx5" path="res://scripts/world.gd" id="1_q0r0h"]
 [ext_resource type="PackedScene" uid="uid://csa5wg3bw580j" path="res://scenes/player.tscn" id="2_bw1j6"]
@@ -1524,6 +1524,9 @@ animations = [{
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_u8gkx"]
 distance = -26.3102
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q0r0h"]
+size = Vector2(1159, 799)
+
 [sub_resource type="Animation" id="Animation_pl11u"]
 length = 0.001
 step = 0.0333
@@ -1904,6 +1907,7 @@ player_scene = ExtResource("2_bw1j6")
 camera = NodePath("../Camera2D")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="world"]
+z_index = -2
 position = Vector2(578, 321)
 sprite_frames = SubResource("SpriteFrames_1kice")
 animation = &"Wolken"
@@ -1928,6 +1932,10 @@ shape = SubResource("WorldBoundaryShape2D_u8gkx")
 position = Vector2(550, 0)
 rotation = -1.5708
 shape = SubResource("WorldBoundaryShape2D_u8gkx")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="StaticBody2D" groups=["Terrain"]]
+position = Vector2(-1.5, -75.5)
+shape = SubResource("RectangleShape2D_q0r0h")
 
 [node name="KillArea" type="Area2D" parent="."]
 unique_name_in_owner = true
