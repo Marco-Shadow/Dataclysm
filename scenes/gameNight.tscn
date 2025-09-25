@@ -472,6 +472,7 @@ player_scene = ExtResource("1_oxd0a")
 camera = NodePath("../Camera2D")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="world"]
+z_index = -2
 position = Vector2(575.75, 324.00003)
 scale = Vector2(0.75032556, 0.63281256)
 sprite_frames = SubResource("SpriteFrames_sappn")
