@@ -50,26 +50,29 @@ func start() -> void:
 	print("Initial turn: Player ", current_player_id)
 
 func spawn_player(id: int) -> void:
-	# Create instance of player scene
 	var player_instance = player_scene.instantiate()
-	
+
+	# 👇 Falls Spieler 2 ein Bot sein soll:
+	if id == 2 && GlobalSettings.Player2Bot == true:
+		player_instance.is_bot = true
+
 	player_instance.add_to_group("Players")
 	
 	# Set random position on the terrain
 	var spawn_position = world.find_player_spawnpoint(camera, id - 1, playerCount)
 	player_instance.position = spawn_position
-	
+
 	# Set player ID
 	player_instance.player_id = id
-	
+
 	# Set turn manager and terrain references
 	player_instance.terrain_node_path = world.get_path()
-	
+
 	# Add to players array
 	players.append(id)
-	
+
 	playerInstances[id] = player_instance
-	
+
 	# Add player to the game scene
 	game.add_child(player_instance)
 	
