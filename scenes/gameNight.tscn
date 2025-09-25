@@ -1,4 +1,4 @@
-[gd_scene load_steps=64 format=3 uid="uid://cfrflvteynfhp"]
+[gd_scene load_steps=55 format=3 uid="uid://cfrflvteynfhp"]
 
 [ext_resource type="PackedScene" uid="uid://csa5wg3bw580j" path="res://scenes/player.tscn" id="1_oxd0a"]
 [ext_resource type="Script" uid="uid://7yc6qyhcfmx5" path="res://scripts/world.gd" id="2_2shgi"]
@@ -88,6 +88,9 @@ animations = [{
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_u8gkx"]
 distance = -26.3102
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gaki6"]
+size = Vector2(1159, 805)
 
 [sub_resource type="Animation" id="Animation_pl11u"]
 length = 0.001
@@ -478,7 +481,7 @@ frame_progress = 0.5809559
 script = ExtResource("4_korrc")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
-collision_layer = 4
+collision_layer = 6
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(-550, 0)
@@ -494,6 +497,10 @@ shape = SubResource("WorldBoundaryShape2D_u8gkx")
 position = Vector2(550, 0)
 rotation = -1.5708
 shape = SubResource("WorldBoundaryShape2D_u8gkx")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="StaticBody2D" groups=["Terrain"]]
+position = Vector2(-1.5, -72.5)
+shape = SubResource("RectangleShape2D_gaki6")
 
 [node name="KillArea" type="Area2D" parent="."]
 unique_name_in_owner = true
