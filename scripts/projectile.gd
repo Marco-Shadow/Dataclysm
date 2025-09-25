@@ -59,19 +59,6 @@ func _ready() -> void:
 		remove_collision_exception_with(terrain_node)
 
 func _physics_process(delta: float) -> void:
-	var viewport_rect = get_viewport().get_visible_rect()
-	var top = viewport_rect.position.y - 10
-	var bottom = viewport_rect.position.y + viewport_rect.size.y
-	var left = viewport_rect.position.x - 10
-	var right = viewport_rect.position.x + viewport_rect.size.x
-
-	# Oben raus → Abprall
-	if global_position.y < top:
-		print("Over the top")
-	# Unten oder links/rechts raus → löschen
-	elif global_position.y > bottom or global_position.x < left or global_position.x > right:
-		queue_free()
-
 	# Waffenabhängige Gravitation anwenden
 	linear_velocity.y += gravity * delta
 	
@@ -142,3 +129,7 @@ func _exit_tree() -> void:
 	if TurnManager.turn_locked and not already_unlocked:
 		TurnManager.unlock_turn()
 		already_unlocked = true
+
+
+func _on_visible_on_screen_notifier_2d_screen_exited() -> void:
+	queue_free()
