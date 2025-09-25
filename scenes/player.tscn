@@ -1,4 +1,4 @@
-[gd_scene load_steps=87 format=3 uid="uid://csa5wg3bw580j"]
+[gd_scene load_steps=94 format=3 uid="uid://csa5wg3bw580j"]
 
 [ext_resource type="Script" uid="uid://s4ofddboap7r" path="res://scripts/player.gd" id="1_ghh78"]
 [ext_resource type="FontFile" uid="uid://14ep6x8xdivm" path="res://assets/AudioNugget.ttf" id="2_qfm1y"]
@@ -18,6 +18,8 @@
 [ext_resource type="Texture2D" uid="uid://5i7dhd1jdlrc" path="res://assets/Sonic explosion/sonicExplosion06.png" id="9_qfm1y"]
 [ext_resource type="Texture2D" uid="uid://drhrs0xqvg7oi" path="res://assets/Sonic explosion/sonicExplosion07.png" id="10_fulsm"]
 [ext_resource type="Texture2D" uid="uid://ds58hytxietfx" path="res://assets/Sonic explosion/sonicExplosion08.png" id="11_4r5pv"]
+[ext_resource type="Texture2D" uid="uid://cksbbqg3jw88v" path="res://assets/JetpackFlames/Jatpack_Flame_Animation.png" id="19_60mlk"]
+[ext_resource type="Script" uid="uid://xt70sgkxwvng" path="res://scenes/jetpackFlames.gd" id="20_i4ail"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_fulsm"]
 font = ExtResource("2_qfm1y")
@@ -536,6 +538,47 @@ bg_color = Color(1, 0.8000001, 0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4r5pv"]
 bg_color = Color(0, 0.96, 0.07999992, 1)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_6c3st"]
+atlas = ExtResource("19_60mlk")
+region = Rect2(0, 0, 1024, 1024)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1da1t"]
+atlas = ExtResource("19_60mlk")
+region = Rect2(1024, 0, 1024, 1024)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p21yu"]
+atlas = ExtResource("19_60mlk")
+region = Rect2(2048, 0, 1024, 1024)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_irpag"]
+atlas = ExtResource("19_60mlk")
+region = Rect2(3072, 0, 1024, 1024)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_bpsgo"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6c3st")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1da1t")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p21yu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_irpag")
+}],
+"loop": true,
+"name": &"jetpackFlames",
+"speed": 10.0
+}]
+
 [node name="player" type="CharacterBody2D"]
 floor_snap_length = 16.0
 script = ExtResource("1_ghh78")
@@ -598,3 +641,12 @@ offset_bottom = -39.0
 theme_override_styles/fill = SubResource("StyleBoxFlat_4r5pv")
 value = 100.0
 show_percentage = false
+
+[node name="AnimatedSprite2D2" type="AnimatedSprite2D" parent="."]
+z_index = -1
+position = Vector2(-2, 31.999996)
+scale = Vector2(0.09765626, 0.09179687)
+sprite_frames = SubResource("SpriteFrames_bpsgo")
+animation = &"jetpackFlames"
+frame_progress = 0.07212066
+script = ExtResource("20_i4ail")
