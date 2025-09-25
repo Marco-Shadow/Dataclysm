@@ -186,6 +186,28 @@ var available_weapons: Array = [
 	}
 ]
 
+# stabile Charakterwahl pro Spieler
+var player_characters := {}         # { player_id: "adventurer" }
+var _rand_seeded := false
+
+func ensure_player_character(player_id: int, pool: Array) -> String:
+	if not player_characters.has(player_id):
+		if not _rand_seeded:
+			randomize()
+			_rand_seeded = true
+		player_characters[player_id] = pool[randi() % pool.size()]
+	return player_characters[player_id]
+
+func set_player_character(player_id: int, name: String) -> void:
+	player_characters[player_id] = name
+
+func get_player_character(player_id: int, pool: Array) -> String:
+	if player_characters.has(player_id):
+		return player_characters[player_id]
+	return ensure_player_character(player_id, pool)
+
+func clear_player_characters() -> void:
+	player_characters.clear()
 
 
 func _ready() -> void:

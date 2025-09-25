@@ -1,10 +1,9 @@
 extends CharacterBody2D
 
 const SPEED = 100.0
-const MAX_SHOOT_FORCE = 800.0   # vorher 1500.0
-const MIN_SHOOT_FORCE = 150.0   # vorher 300.0
-const GRAVITY = 1200.0          # Spieler-Schwerkraft (nicht für Projektil)
-
+const MAX_SHOOT_FORCE = 800.0
+const MIN_SHOOT_FORCE = 150.0
+const GRAVITY = 1200.0          # Spieler Schwerkraft, nicht fürs Projektil
 const TRAJECTORY_POINTS = 42
 const MAX_TRAJECTORY_TIME = 5.0
 const JETPACK_FORCE = 250.0
@@ -52,6 +51,7 @@ var current_weapon_index: int = 0
 
 # Character Auswahl
 var all_characters := ["prostitute", "adventurer", "female", "player", "soldier", "zombie"]
+@export var fixed_character_name: String = ""   # optional fix per Inspector
 var character_name: String = ""
 
 func _ready() -> void:
@@ -63,21 +63,15 @@ func _ready() -> void:
 	available_weapons = GlobalSettings.available_weapons
 	_update_weapon_display()
 
-	randomize()
-	character_name = all_characters[randi() % all_characters.size()]
+	# stabiler Charakter, kein Random in _ready
+	if fixed_character_name != "":
+		character_name = fixed_character_name
+	else:
+		character_name = GlobalSettings.ensure_player_character(player_id, all_characters)
+
 	_init_character_pose()
 
 	# Trajectory Line Setup
-
-	
-	# Select a random animation for the projectile
-	if sprite and sprite is AnimatedSprite2D:
-		var animations = sprite.sprite_frames.get_animation_names()
-		if animations.size() > 0:
-			var random_animation = animations[randi() % animations.size()]
-			sprite.play(random_animation)
-	
-	# Set up trajectory line
 	if has_node("TrajectoryLine"):
 		trajectoryLine = get_node("TrajectoryLine")
 	else:
@@ -189,9 +183,7 @@ func update_trajectory():
 	var direction = Vector2.RIGHT.rotated(angle_rad)
 	var time_step = 0.008
 
-	
-	# Wenn Spieler gerade auflädt -> volle Vorschau
-
+	# volle Vorschau beim Laden
 	if charging_power:
 		var actual_force = MIN_SHOOT_FORCE + (MAX_SHOOT_FORCE - MIN_SHOOT_FORCE) * power_level
 		var vel = direction * (weapon["initial_speed"] * (actual_force / MAX_SHOOT_FORCE))
@@ -199,7 +191,6 @@ func update_trajectory():
 		for i in range(1, TRAJECTORY_POINTS + 1):
 			vel.y += weapon["gravity"] * time_step
 			pos += vel * time_step
-
 			var dot = ColorRect.new()
 			dot.color = Color(0.8, 0.8, 0.8, 1)
 			var size = max(1.5, 6.0 - i * 0.20)
@@ -207,14 +198,11 @@ func update_trajectory():
 			dot.position = pos
 			add_child(dot)
 			trajectory_dots.append(dot)
-	
-	# Wenn Spieler NICHT auflädt -> kurze Vorschau
-
+	# kurze Vorschau sonst
 	else:
 		var preview_force = MIN_SHOOT_FORCE + (MAX_SHOOT_FORCE - MIN_SHOOT_FORCE) * 0.75
 		var vel = direction * (weapon["initial_speed"] * (preview_force / MAX_SHOOT_FORCE))
 		var pos = projectile_offset
-
 		for i in range(1, 6):
 			vel.y += weapon["gravity"] * time_step
 			pos += vel * time_step
@@ -228,7 +216,6 @@ func update_trajectory():
 			add_child(dot)
 			trajectory_dots.append(dot)
 
-
 func apply_dotted_effect():
 	var points = trajectoryLine.get_point_count()
 	var visible_points: Array[Vector2] = []
@@ -238,7 +225,6 @@ func apply_dotted_effect():
 	trajectoryLine.clear_points()
 	for point in visible_points:
 		trajectoryLine.add_point(point)
-
 
 func _physics_process(delta: float) -> void:
 	HealthBar.value = health
@@ -257,7 +243,6 @@ func _physics_process(delta: float) -> void:
 		velocity.y += GRAVITY * delta
 
 	# Bewegung sperren wenn nicht dran
-
 	if not is_my_turn() or TurnManager.turn_locked:
 		velocity.x = 0.0
 		move_and_slide()
@@ -275,7 +260,6 @@ func _physics_process(delta: float) -> void:
 
 	# Spiegeln
 	if direction < 0.0:
-
 		sprite.flip_h = true
 	elif direction > 0.0:
 		sprite.flip_h = false
@@ -288,7 +272,6 @@ func _physics_process(delta: float) -> void:
 
 	# Distanzlimit
 	if direction != 0.0 and distaceToMove > 0.0:
-
 		var distance_this_frame: float = abs(velocity.x) * delta
 		if distance_this_frame >= distaceToMove:
 			var allowed_ratio := 0.0
@@ -326,37 +309,37 @@ func is_my_turn() -> bool:
 func do_shoot() -> void:
 	if shoot_cooldown > 0.0 or dead or TurnManager.turn_locked:
 		return
-		 
+
 	var actual_force = MIN_SHOOT_FORCE + (MAX_SHOOT_FORCE - MIN_SHOOT_FORCE) * power_level
 	var weapon = available_weapons[current_weapon_index]
-	
+
 	print("Player " + str(player_id) + " creating projectile with force " + str(actual_force) + " with weapon: " + weapon["name"])
-	
+
 	var projectile_scene = preload("res://scenes/projectile.tscn")
 	var projectile = projectile_scene.instantiate()
-	
+
 	projectile.shooter_id = player_id
 	projectile.shooter_node = self
 	projectile.terrain_node = terrain_node
-	
+
 	projectile.weapon_name = weapon["name"]
 	projectile.min_damage = weapon["min_damage"]
 	projectile.max_damage = weapon["max_damage"]
 	projectile.initial_speed = weapon["initial_speed"]
 	projectile.gravity = weapon["gravity"]
-	
+
 	projectile.position = global_position + projectile_offset
-	
+
 	var angle_rad = deg_to_rad(shoot_angle)
 	var direction = Vector2.RIGHT.rotated(angle_rad)
-	
-	# Geschwindigkeit = initial_speed * Ladungsfaktor
+
+	# Geschwindigkeit = initial_speed mal Ladungsfaktor
 	var normalized_force = actual_force / MAX_SHOOT_FORCE
 	projectile.linear_velocity = direction * weapon["initial_speed"] * normalized_force
 	projectile.direction = direction.normalized()
-		
+
 	get_tree().get_current_scene().add_child(projectile)
-	
+
 	shoot_cooldown = 1.0
 	jetpack_refilled = false
 	charging_power = false
@@ -368,8 +351,6 @@ func _input(event: InputEvent) -> void:
 		_select_next_weapon()
 	elif event.is_action_pressed("weapon_prev"):
 		_select_previous_weapon()
-
-# Waffenwechsel
 
 func _select_next_weapon() -> void:
 	current_weapon_index += 1
