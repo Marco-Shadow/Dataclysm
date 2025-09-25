@@ -82,7 +82,7 @@ text = "Game Over"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button3" type="Button" parent="VBoxContainer"]
+[node name="RestartButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -98,7 +98,7 @@ text = "Restart"
 script = ExtResource("2_gob2e")
 metadata/_edit_lock_ = true
 
-[node name="Button4" type="Button" parent="VBoxContainer"]
+[node name="MainMenuButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -144,5 +144,5 @@ offset_bottom = 112.0
 grow_horizontal = 0
 text = "Profilbild"
 
-[connection signal="pressed" from="VBoxContainer/Button3" to="VBoxContainer/Button3" method="_on_pressed_Restart"]
-[connection signal="pressed" from="VBoxContainer/Button4" to="VBoxContainer/Button4" method="_on_pressed_MainMenu"]
+[connection signal="pressed" from="VBoxContainer/RestartButton" to="VBoxContainer/RestartButton" method="_on_pressed_Restart"]
+[connection signal="pressed" from="VBoxContainer/MainMenuButton" to="VBoxContainer/MainMenuButton" method="_on_pressed_MainMenu"]
