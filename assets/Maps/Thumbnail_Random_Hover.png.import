@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d21kabh4uv0c3"
-path="res://.godot/imported/Lama.jpg-163fc964e4d101b74fe569a46af094fa.ctex"
+uid="uid://cjq3gtqo6ktkl"
+path="res://.godot/imported/Thumbnail_Random_Hover.png-6a4b7678d001170def2052fb15696ba0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Maps/Lama.jpg"
-dest_files=["res://.godot/imported/Lama.jpg-163fc964e4d101b74fe569a46af094fa.ctex"]
+source_file="res://assets/Maps/Thumbnail_Random_Hover.png"
+dest_files=["res://.godot/imported/Thumbnail_Random_Hover.png-6a4b7678d001170def2052fb15696ba0.ctex"]
 
 [params]
 
