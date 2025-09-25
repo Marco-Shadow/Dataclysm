@@ -32,7 +32,9 @@ var gravity: float = 0.0
 
 var weapon_name: String = "cd"
 var velocity: Vector2 = Vector2.ZERO
-var already_unlocked: bool = false
+
+# Turn-Abschluss-Flag (verhindert doppeltes Freigeben/Wechseln)
+var turn_finished: bool = false
 
 func _ready() -> void:
 	var animated_sprite = get_node_or_null("AnimatedSprite2D")
@@ -66,6 +68,19 @@ func _physics_process(delta: float) -> void:
 	var rotation_amount = velocity_magnitude * rotation_speed_multiplier * spin_direction * delta
 	rotate(rotation_amount)
 	
+	# --- Bildschirmgrenzen prüfen ---
+	var viewport_rect = get_viewport().get_visible_rect()
+	
+	# Oben raus -> nichts tun, Projektil soll zurückfallen
+	if global_position.y < viewport_rect.position.y:
+		pass
+	# Links / Rechts / Unten raus -> Turn beenden
+	elif global_position.x < viewport_rect.position.x \
+	or global_position.x > viewport_rect.position.x + viewport_rect.size.x \
+	or global_position.y > viewport_rect.position.y + viewport_rect.size.y:
+		_end_turn_and_free()
+	
+	# Trace-Effekt
 	if enable_trace:
 		trace_timer += delta
 		if trace_timer >= trace_dot_interval:
@@ -103,15 +118,22 @@ func calculate_damage() -> float:
 	var damage = lerp(min_damage, max_damage, t)
 	return max(damage, 0.0)
 
+# Hilfsfunktion: Turn beenden und Projektil entfernen
+func _end_turn_and_free() -> void:
+	if turn_finished:
+		return
+	turn_finished = true
+	print(">>> Projectile ended turn, unlocking")
+	TurnManager.unlock_turn()  # unlock_turn macht auch switch_turn()
+	queue_free()
+
 # Kollisionsabfrage
 func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("Terrain"):
 		if terrain_node:
 			terrain_node.emit_signal("carve_requested", terrain_node.to_local(global_position), 50.0)
-		queue_free()
-		if not already_unlocked:
-			TurnManager.unlock_turn()
-			already_unlocked = true
+		_end_turn_and_free()
+		return
 	
 	if body.is_in_group("Players"):
 		var player_id = body.player_id
@@ -119,13 +141,11 @@ func _on_body_entered(body: Node) -> void:
 		if player:
 			var damage_amount = calculate_damage()
 			player.damage(damage_amount)
-		queue_free()
-		if not already_unlocked:
-			TurnManager.unlock_turn()
-			already_unlocked = true
+		_end_turn_and_free()
+		return
 
+# Projektil endgültig verschwunden (Sicherheitsleine)
 func _exit_tree() -> void:
-	# Nur entsperren, wenn es bisher nicht passiert ist
-	if TurnManager.turn_locked and not already_unlocked:
+	if not turn_finished:
 		TurnManager.unlock_turn()
-		already_unlocked = true
+		turn_finished = true
