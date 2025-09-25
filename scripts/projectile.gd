@@ -52,6 +52,12 @@ func _ready() -> void:
 		await get_tree().create_timer(0.2).timeout
 		remove_collision_exception_with(shooter_node)
 
+	# Terrain 0.1 Sekunden lang ignorieren (gegen Kanten-Kollision beim Spawn)
+	if terrain_node:
+		add_collision_exception_with(terrain_node)
+		await get_tree().create_timer(0.1).timeout
+		remove_collision_exception_with(terrain_node)
+
 func _physics_process(delta: float) -> void:
 	var viewport_rect = get_viewport().get_visible_rect()
 	var top = viewport_rect.position.y - 10

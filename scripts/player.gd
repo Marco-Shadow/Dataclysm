@@ -328,10 +328,10 @@ func do_shoot() -> void:
 	projectile.initial_speed = weapon["initial_speed"]
 	projectile.gravity = weapon["gravity"]
 
-	projectile.position = global_position + projectile_offset
-
+	# Position leicht vor den Spieler setzen (10 Pixel in Schussrichtung)
 	var angle_rad = deg_to_rad(shoot_angle)
 	var direction = Vector2.RIGHT.rotated(angle_rad)
+	projectile.position = global_position + projectile_offset + direction * 10.0
 
 	# Geschwindigkeit = initial_speed mal Ladungsfaktor
 	var normalized_force = actual_force / MAX_SHOOT_FORCE
