@@ -465,6 +465,7 @@ outline_size = 3
 [node name="Game" type="Node2D"]
 
 [node name="world" type="Node2D" parent="." node_paths=PackedStringArray("game", "camera")]
+z_index = -5
 position = Vector2(-576, -324)
 script = ExtResource("2_2shgi")
 game = NodePath("..")
