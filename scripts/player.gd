@@ -196,6 +196,7 @@ func update_trajectory():
 			var size = max(1.5, 6.0 - i * 0.20)
 			dot.size = Vector2(size, size)
 			dot.position = pos
+			dot.z_index -= 1
 			add_child(dot)
 			trajectory_dots.append(dot)
 	# kurze Vorschau sonst
@@ -213,18 +214,9 @@ func update_trajectory():
 				break
 			dot.size = Vector2(size, size)
 			dot.position = pos
+			dot.z_index -= 1
 			add_child(dot)
 			trajectory_dots.append(dot)
-
-func apply_dotted_effect():
-	var points = trajectoryLine.get_point_count()
-	var visible_points: Array[Vector2] = []
-	for i in range(points):
-		if i % 2 == 0:
-			visible_points.append(trajectoryLine.get_point_position(i))
-	trajectoryLine.clear_points()
-	for point in visible_points:
-		trajectoryLine.add_point(point)
 
 func _physics_process(delta: float) -> void:
 	HealthBar.value = health
