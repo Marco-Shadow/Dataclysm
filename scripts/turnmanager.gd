@@ -38,6 +38,8 @@ func start() -> void:
 		
 	current_player_id = 1
 	print("Initial turn: Player ", current_player_id)
+	if playerInstances.has(current_player_id):
+		playerInstances[current_player_id].set_active(true)
 
 func spawn_player(id: int) -> void:
 	var player_instance = player_scene.instantiate()
@@ -113,6 +115,14 @@ func switch_turn():
 	
 	if previous_player_id != current_player_id:
 		print("Switched turn to player ", current_player_id)
+	
+	# alten Spieler zurücksetzen
+	if playerInstances.has(previous_player_id):
+		playerInstances[previous_player_id].set_active(false)
+
+	# neuen Spieler markieren
+	if playerInstances.has(current_player_id):
+		playerInstances[current_player_id].set_active(true)
 
 func lock_turn():
 	turn_locked = true
