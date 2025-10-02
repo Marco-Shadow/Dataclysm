@@ -51,13 +51,13 @@ func _ready() -> void:
 	# Kurzzeitige Kollisionsausnahme für den Schützen
 	if shooter_node:
 		add_collision_exception_with(shooter_node)
-		await get_tree().create_timer(0.2).timeout
+		await get_tree().create_timer(0.5).timeout
 		remove_collision_exception_with(shooter_node)
 
 	# Terrain 0.1 Sekunden lang ignorieren (gegen Kanten-Kollision beim Spawn)
 	if terrain_node:
 		add_collision_exception_with(terrain_node)
-		await get_tree().create_timer(0.1).timeout
+		await get_tree().create_timer(0.3).timeout
 		remove_collision_exception_with(terrain_node)
 
 func _physics_process(delta: float) -> void:
@@ -69,16 +69,16 @@ func _physics_process(delta: float) -> void:
 	rotate(rotation_amount)
 	
 	# --- Bildschirmgrenzen prüfen ---
-	var viewport_rect = get_viewport().get_visible_rect()
+	#var viewport_rect = get_viewport().get_visible_rect()
 	
 	# Oben raus -> nichts tun, Projektil soll zurückfallen
-	if global_position.y < viewport_rect.position.y:
-		pass
+	#if global_position.y < viewport_rect.position.y:
+		#pass
 	# Links / Rechts / Unten raus -> Turn beenden
-	elif global_position.x < viewport_rect.position.x \
-	or global_position.x > viewport_rect.position.x + viewport_rect.size.x \
-	or global_position.y > viewport_rect.position.y + viewport_rect.size.y:
-		_end_turn_and_free()
+	#elif global_position.x < viewport_rect.position.x \
+	#or global_position.x > viewport_rect.position.x + viewport_rect.size.x \
+	#or global_position.y > viewport_rect.position.y + viewport_rect.size.y:
+		#_end_turn_and_free()
 	
 	# Trace-Effekt
 	if enable_trace:
@@ -112,9 +112,10 @@ func create_dot_texture(size: float, color: Color) -> ImageTexture:
 
 # Damage-Berechnung
 func calculate_damage() -> float:
-	var current_speed = linear_velocity.length()
+	var impact_speed = linear_velocity.length()
+	# relative Geschwindigkeit zur initial_speed normieren
 	var max_speed = max(initial_speed, 1.0)
-	var t = clamp(current_speed / max_speed, 0.0, 1.0)
+	var t = clamp(impact_speed / max_speed, 0.3, 1.0)  # min 30%
 	var damage = lerp(min_damage, max_damage, t)
 	return max(damage, 0.0)
 

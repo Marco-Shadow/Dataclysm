@@ -186,14 +186,6 @@ func _process(delta: float) -> void:
 			dot.queue_free()
 		trajectory_dots.clear()
 
-
-	# Jetpack Fuel
-	if jetpack_active:
-		jetpack_fuel -= delta
-		if jetpack_fuel <= 0.0:
-			jetpack_active = false
-			jetpack_fuel = 0.0
-
 func update_trajectory():
 	for dot in trajectory_dots:
 		dot.queue_free()
@@ -211,7 +203,7 @@ func update_trajectory():
 		var vel = direction * (weapon["initial_speed"] * (actual_force / MAX_SHOOT_FORCE))
 		var pos = projectile_offset
 		for i in range(1, TRAJECTORY_POINTS + 1):
-			vel.y += weapon["gravity"] * time_step
+			vel.y += weapon["gravity"] * time_step  # statt GRAVITY
 			pos += vel * time_step
 
 			var dot = ColorRect.new()
@@ -257,6 +249,7 @@ func _physics_process(delta: float) -> void:
 	HealthBar.value = health
 	fuel_bar.value = jetpack_fuel
 
+	# --- Jetpack Handling ---
 	if is_my_turn() and Input.is_action_pressed("player_jetpack") and jetpack_fuel > 0 and not is_bot:
 		jetpack_active = true
 		jetpack_fuel -= delta
@@ -278,7 +271,7 @@ func _physics_process(delta: float) -> void:
 	if dead:
 		return
 
-	# Fuel nach Zugwechsel auffüllen
+	# --- Fuel Reset nach Zugwechsel ---
 	if not jetpack_refilled and is_my_turn():
 		jetpack_fuel = JETPACK_MAX_FUEL
 		jetpack_refilled = true
@@ -288,10 +281,9 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		return
 	
+	# --- Bewegung (Spielerinput) ---
 	var direction := Input.get_axis("player_left", "player_right")
-	
 	if direction < 0:
-
 		sprite.flip_h = true
 	elif direction > 0.0:
 		sprite.flip_h = false
@@ -300,19 +292,15 @@ func _physics_process(delta: float) -> void:
 		velocity.x = direction * SPEED		
 	else:
 		velocity.x = 0
-		
-	if direction != 0 and distaceToMove > 0.0:
-		var distance_this_frame: float = abs(velocity.x) * delta
 
-
-	# Distanzlimit
+	# --- Distanzlimit ---
 	if direction != 0.0 and distaceToMove > 0.0:
 		var distance_this_frame: float = abs(velocity.x) * delta
 		if distance_this_frame >= distaceToMove:
 			var allowed_ratio := 0.0
 			if distance_this_frame != 0.0:
 				allowed_ratio = distaceToMove / distance_this_frame
-			velocity.x = velocity.x * allowed_ratio
+			velocity.x *= allowed_ratio
 			distaceToMove = 0.0
 		else:
 			distaceToMove -= distance_this_frame
@@ -321,20 +309,25 @@ func _physics_process(delta: float) -> void:
 
 	movementBar.value = distaceToMove
 
-
-	# Laufanimation
-	var moving: bool = abs(velocity.x) > 0.1 and not TurnManager.turn_locked and is_my_turn() and not dead and not jetpack_active
+	# --- Animationen ---
+	var jetpack_anim := character_name + "_jetpack"
 	var move_anim := character_name + "_move"
-	if moving:
-		if sprite.animation != move_anim or not sprite.is_playing():
-			if sprite.sprite_frames and sprite.sprite_frames.has_animation(move_anim):
-				sprite.play(move_anim)
+
+	if jetpack_active and sprite.sprite_frames and sprite.sprite_frames.has_animation(jetpack_anim):
+		if sprite.animation != jetpack_anim or not sprite.is_playing():
+			sprite.play(jetpack_anim)
 	else:
-		if sprite.animation != move_anim:
-			sprite.animation = move_anim
-		if sprite.is_playing() or sprite.frame != 0:
-			sprite.frame = 0
-			sprite.stop()
+		var moving: bool = abs(velocity.x) > 0.1 and not TurnManager.turn_locked and is_my_turn() and not dead
+		if moving:
+			if sprite.sprite_frames and sprite.sprite_frames.has_animation(move_anim):
+				if sprite.animation != move_anim or not sprite.is_playing():
+					sprite.play(move_anim)
+		else:
+			if sprite.animation != move_anim:
+				sprite.animation = move_anim
+			if sprite.is_playing() or sprite.frame != 0:
+				sprite.frame = 0
+				sprite.stop()
 
 	move_and_slide()
 
@@ -346,10 +339,16 @@ func do_shoot() -> void:
 	if shoot_cooldown > 0.0 or dead or TurnManager.turn_locked:
 		return
 
-	var actual_force = MIN_SHOOT_FORCE + (MAX_SHOOT_FORCE - MIN_SHOOT_FORCE) * power_level
 	var weapon = available_weapons[current_weapon_index]
 
-	print("Player " + str(player_id) + " creating projectile with force " + str(actual_force) + " with weapon: " + weapon["name"])
+	# gleiche Formel wie beim Bot
+	var actual_force = MIN_SHOOT_FORCE + (MAX_SHOOT_FORCE - MIN_SHOOT_FORCE) * power_level
+	var normalized_force = actual_force / MAX_SHOOT_FORCE
+	var angle_rad = deg_to_rad(shoot_angle)
+	var direction = Vector2.RIGHT.rotated(angle_rad)
+
+	print("Player " + str(player_id) + " shoots with weapon " + weapon["name"] +
+		" power=" + str(power_level) + " norm_force=" + str(normalized_force))
 
 	var projectile_scene = preload("res://scenes/projectile.tscn")
 	var projectile = projectile_scene.instantiate()
@@ -357,31 +356,28 @@ func do_shoot() -> void:
 	projectile.shooter_id = player_id
 	projectile.shooter_node = self
 	projectile.terrain_node = terrain_node
-	
-	projectile.weapon_name = weapon["name"];
 
+	# Waffenwerte übertragen
+	projectile.weapon_name = weapon["name"]
 	projectile.min_damage = weapon["min_damage"]
 	projectile.max_damage = weapon["max_damage"]
 	projectile.initial_speed = weapon["initial_speed"]
 	projectile.gravity = weapon["gravity"]
 
-	projectile.position = global_position + projectile_offset
-	
-	var angle_rad = deg_to_rad(shoot_angle)
-	var direction = Vector2.RIGHT.rotated(angle_rad)
-	projectile.position = global_position + projectile_offset + direction * 10.0
+	# Startposition etwas vor dem Spieler, um Kollision zu vermeiden
+	projectile.position = global_position + projectile_offset + direction * 20.0
 
-	# Geschwindigkeit = initial_speed mal Ladungsfaktor
-	var normalized_force = actual_force / MAX_SHOOT_FORCE
+	# Startgeschwindigkeit (Skalierung nach Waffe + Power-Level)
 	projectile.linear_velocity = direction * weapon["initial_speed"] * normalized_force
 	projectile.direction = direction.normalized()
-		
+
 	get_tree().get_current_scene().add_child(projectile)
-	
+
 	shoot_cooldown = 1.0
 	jetpack_refilled = false
 	charging_power = false
 	TurnManager.lock_turn()
+
 
 func _input(event: InputEvent) -> void:
 	if is_bot:
@@ -408,7 +404,7 @@ func _update_weapon_display() -> void:
 	hud.update_weapon(weapon["name"], weapon["icon"])
 
 # --- BOT FUNKTION bleibt unverändert ---
-func _bot_tick(_delta: float) -> void:
+func _bot_tick(delta: float) -> void:
 	if not is_my_turn() or dead or TurnManager.turn_locked:
 		return
 	if bot_has_shot:
@@ -418,37 +414,55 @@ func _bot_tick(_delta: float) -> void:
 	if target == null or target.dead:
 		return
 
-	# Kleine Bewegung Richtung Ziel
-	var dx = target.global_position.x - global_position.x
-	if abs(dx) > 50:
-		if dx > 0:
-			velocity.x = SPEED
+	# --- 1. Waffe anhand Distanz auswählen ---
+	var dx_total: float = abs(target.global_position.x - global_position.x)
+	if available_weapons.size() > 0:
+		if dx_total > 800 and available_weapons.size() >= 1:
+			current_weapon_index = 0   # Fernkampf
+		elif dx_total > 400 and available_weapons.size() >= 2:
+			current_weapon_index = 1   # Mittel
 		else:
-			velocity.x = -SPEED
+			current_weapon_index = min(2, available_weapons.size() - 1)  # Nahkampf
+		_update_weapon_display()
+		print("🤖 Bot hat Waffe gewählt:", available_weapons[current_weapon_index]["name"])
+
+	# --- 2. Kleine Bewegung Richtung Ziel (mit Jetpack + Animation) ---
+	var pre_dx: float = target.global_position.x - global_position.x
+	if abs(pre_dx) > 50.0:
+		velocity.x = SPEED if pre_dx > 0.0 else -SPEED
 		jetpack_active = true
-		jetpack_fuel = max(jetpack_fuel - _delta, 0.0)
+		jetpack_fuel = max(jetpack_fuel - delta, 0.0)
+
+		var jetpack_anim := character_name + "_jetpack"
+		if sprite.sprite_frames and sprite.sprite_frames.has_animation(jetpack_anim):
+			if sprite.animation != jetpack_anim or not sprite.is_playing():
+				sprite.play(jetpack_anim)
+
 		await get_tree().create_timer(0.7).timeout
 		velocity.x = 0
 		jetpack_active = false
 
-	# Projektil-Parameter
-	var weapon = available_weapons[current_weapon_index]
-	var g: float = 1000.0
-	if weapon.has("gravity"):
-		g = float(weapon["gravity"])
+		var move_anim := character_name + "_move"
+		if sprite.sprite_frames and sprite.sprite_frames.has_animation(move_anim):
+			sprite.play(move_anim)
 
+	# --- 3. Projektilparameter ---
+	var dx: float = target.global_position.x - (global_position.x + cos(deg_to_rad(shoot_angle)) * 20.0)
+	var dy: float = target.global_position.y - (global_position.y + sin(deg_to_rad(shoot_angle)) * 20.0)
+	var weapon = available_weapons[current_weapon_index]
+
+	var g: float = float(weapon["gravity"]) if weapon.has("gravity") else 1000.0
 	var v_min: float = MIN_SHOOT_FORCE
 	var v_max: float = MAX_SHOOT_FORCE
-
-	dx = target.global_position.x - global_position.x
-	var dy: float = target.global_position.y - global_position.y
 
 	var ax: float = abs(dx)
 	var dy_math: float = -dy
 
 	var found := false
-	var theta_math := 0.0
+	var chosen_theta := 0.0
 	var chosen_power := 0.6
+
+	var use_high_arc := dx_total > 700.0
 
 	for p in range(40, 101, 5):
 		var power: float = float(p) / 100.0
@@ -461,30 +475,32 @@ func _bot_tick(_delta: float) -> void:
 
 		var root: float = sqrt(disc)
 		var theta_low := atan((v2 - root) / (g * ax))
-		theta_math = theta_low
+		var theta_high := atan((v2 + root) / (g * ax))
 
+		chosen_theta = theta_high if use_high_arc else theta_low
 		if dx < 0.0:
-			theta_math = PI - theta_low
+			chosen_theta = PI - chosen_theta
 
 		chosen_power = power
 		found = true
 		break
 
+	# --- 4. Fallback ---
 	if not found:
-		var safe_dx: float = dx
-		if dx == 0.0:
-			safe_dx = 1.0
+		var safe_dx: float = 1.0 if dx == 0.0 else dx
 		shoot_angle = rad_to_deg(atan2(-220.0, safe_dx))
 		power_level = 0.65
 		do_shoot()
 		bot_has_shot = true
 		return
 
-	var theta_godot := -theta_math
+	# --- 5. Ergebnis anwenden ---
+	var theta_godot := -chosen_theta
 	shoot_angle = rad_to_deg(theta_godot)
 	power_level = chosen_power
 
 	do_shoot()
 	bot_has_shot = true
 
-	print("Bot Schuss -> angle:", shoot_angle, " power:", power_level, " g:", g, " dx:", dx, " dy:", dy)
+	var mode_str := "HIGH" if use_high_arc else "LOW"
+	print("🤖 Bot Schuss -> angle:", shoot_angle, " power:", power_level, " weapon:", weapon["name"], " dx:", dx, " dy:", dy, " mode:", mode_str)
