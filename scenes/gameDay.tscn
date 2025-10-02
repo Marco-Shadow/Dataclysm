@@ -1900,6 +1900,7 @@ outline_size = 3
 [node name="Game" type="Node2D"]
 
 [node name="world" type="Node2D" parent="." node_paths=PackedStringArray("game", "camera")]
+z_index = -5
 position = Vector2(-576, -324)
 script = ExtResource("1_q0r0h")
 game = NodePath("..")
@@ -2130,7 +2131,7 @@ custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_font_sizes/normal_font_size = 24
-text = "Prev Weapon "
+text = "Prev Projectile"
 fit_content = true
 vertical_alignment = 1
 
@@ -2139,7 +2140,7 @@ custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_font_sizes/normal_font_size = 24
-text = "Next Weapon"
+text = "Next Projectile"
 fit_content = true
 vertical_alignment = 1
 
@@ -2223,6 +2224,6 @@ offset_left = 2.0
 offset_top = -101.0
 offset_right = 155.0
 offset_bottom = -78.0
-text = "Ausgewählte Waffe:"
+text = "Projectile:"
 label_settings = SubResource("LabelSettings_1kice")
 uppercase = true

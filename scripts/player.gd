@@ -211,6 +211,7 @@ func update_trajectory():
 			var size = max(1.5, 6.0 - i * 0.20)
 			dot.size = Vector2(size, size)
 			dot.position = pos
+			dot.z_index -= 1
 			add_child(dot)
 			trajectory_dots.append(dot)
 
@@ -231,9 +232,9 @@ func update_trajectory():
 				break
 			dot.size = Vector2(size, size)
 			dot.position = pos
+			dot.z_index -= 1
 			add_child(dot)
 			trajectory_dots.append(dot)
-
 
 func apply_dotted_effect():
 	var points = trajectoryLine.get_point_count()
