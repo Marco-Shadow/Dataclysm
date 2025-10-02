@@ -26,7 +26,7 @@ var trace_timer: float = 0.0
 
 # Weapon values (überschrieben vom Player)
 var min_damage: int = 0
-var max_damage: int = 0
+var max_damage: int = 1500
 var initial_speed: float = 0.0
 var gravity: float = 0.0
 
@@ -37,12 +37,12 @@ var velocity: Vector2 = Vector2.ZERO
 var turn_finished: bool = false
 
 # --- Schaden-Delay ---
-@export var damage_activation_delay: float = 0.5  # 0,5 Sekunden
+@export var damage_activation_delay: float = 0.1  # 0,1 Sekunden
 var damage_timer: float = 0.0
-var damage_active: bool = false
+var damage_active: bool = true
 
 # --- Out-of-bounds Timer (links/rechts raus) ---
-@export var out_of_bounds_lifetime: float = 1.5  # Sekunden
+@export var out_of_bounds_lifetime: float = 0.5  # Sekunden
 var out_of_bounds_timer: float = -1.0
 
 func _ready() -> void:
@@ -62,7 +62,7 @@ func _ready() -> void:
 	# Kollisionsausnahme kurz für Schützen
 	if shooter_node:
 		add_collision_exception_with(shooter_node)
-		await get_tree().create_timer(0.2).timeout
+		await get_tree().create_timer(0.5).timeout
 		remove_collision_exception_with(shooter_node)
 
 	# Terrain 0.1 Sekunden ignorieren
@@ -79,31 +79,7 @@ func _physics_process(delta: float) -> void:
 	var velocity_magnitude = linear_velocity.length()
 	var rotation_amount = velocity_magnitude * rotation_speed_multiplier * spin_direction * delta
 	rotate(rotation_amount)
-
-	# --- Schaden nach Delay aktivieren ---
-	if not damage_active:
-		damage_timer += delta
-		if damage_timer >= damage_activation_delay:
-			damage_active = true
-
-	# --- Out-of-bounds Check (links/rechts) ---
-	var viewport_rect = get_viewport().get_visible_rect()
-
-	if global_position.x < viewport_rect.position.x or global_position.x > viewport_rect.position.x + viewport_rect.size.x:
-		if out_of_bounds_timer < 0.0:
-			print("⚠️ Projectile left screen horizontally, starting despawn timer")
-			out_of_bounds_timer = out_of_bounds_lifetime
-	else:
-		# Reset, falls wieder im Sichtbereich
-		out_of_bounds_timer = -1.0
-
-	# Timer runterzählen
-	if out_of_bounds_timer > 0.0:
-		out_of_bounds_timer -= delta
-		if out_of_bounds_timer <= 0.0:
-			print("💥 Projectile despawned after out-of-bounds delay")
-			_end_turn_and_free()
-
+	
 	# Trace-Effekt
 	if enable_trace:
 		trace_timer += delta
@@ -136,16 +112,12 @@ func create_dot_texture(size: float, color: Color) -> ImageTexture:
 
 # Damage-Berechnung mit Schwelle
 func calculate_damage() -> float:
-	var current_speed = linear_velocity.length()
-	if current_speed < min_velocity_for_damage:
-		return 0.0
-
-	var t = clamp(
-		(current_speed - min_velocity_for_damage) / max(1.0, (max_velocity_for_damage - min_velocity_for_damage)),
-		0.0, 1.0
-	)
-
-	return lerp(min_damage, max_damage, t)
+	var impact_speed = linear_velocity.length()
+	# relative Geschwindigkeit zur initial_speed normieren
+	var max_speed = max(initial_speed, 1.0)
+	var t = clamp(impact_speed / max_speed, 0.3, 1.0)  # min 30%
+	var damage = lerp(min_damage, max_damage, t)
+	return max(damage, 0.0)
 
 # Turn beenden
 func _end_turn_and_free() -> void:
@@ -188,3 +160,21 @@ func _exit_tree() -> void:
 		print("⚠️ Projectile removed unexpectedly, unlocking as fallback")
 		TurnManager.unlock_turn()
 		turn_finished = true
+
+
+func _on_visible_on_screen_notifier_2d_screen_exited() -> void:
+# Kamera holen (hier Beispiel: TurnManager.camera)
+	var cam = TurnManager.camera
+	if cam == null:
+		return
+		
+	# Viewport-Größe in Pixel
+	var viewport_size = get_viewport().get_visible_rect().size
+	# Welt-Koordinaten der Bildschirmränder
+	var half_height = viewport_size.y * 0.5 * cam.zoom.y
+
+	var top = cam.global_position.y - half_height
+	var pos = global_position
+	
+	if not pos.y < top: 
+		queue_free()
