@@ -65,7 +65,10 @@ func _ready() -> void:
 	deathSprite = get_node("DeathAnimationSprite")
 	labelObj = get_node("PlayerLabel")
 
-	labelObj.text = "Player " + str(player_id)
+	labelObj.text = "Player " + str(player_id)	
+	# label_settings duplizieren, damit jede Instanz ihr eigenes hat
+	labelObj.label_settings = labelObj.label_settings.duplicate()
+	set_active(false) # Standardfarbe 
 	available_weapons = GlobalSettings.available_weapons
 	_update_weapon_display()
 
@@ -130,9 +133,7 @@ func die():
 func damage(amount):
 	health = max(0, health - amount)
 
-# ✅ FIX: hier war vorher "die()" → jetzt Health-Check
 func _process(delta: float) -> void:
-
 	if health <= 0.0 and not dead:
 		die()
 		
@@ -505,3 +506,14 @@ func _bot_tick(delta: float) -> void:
 
 	var mode_str := "HIGH" if use_high_arc else "LOW"
 	print("🤖 Bot Schuss -> angle:", shoot_angle, " power:", power_level, " weapon:", weapon["name"], " dx:", dx, " dy:", dy, " mode:", mode_str)
+
+
+# --- Spielerlabel hervorheben oder zurücksetzen ---
+func set_active(active: bool) -> void:
+	if labelObj == null:
+		return
+		
+	if active:
+		labelObj.label_settings.font_color = Color(0.474, 0.0, 0.474, 1.0)
+	else:
+		labelObj.label_settings.font_color = Color(0.0, 0.0, 0.0, 1.0)
