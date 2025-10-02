@@ -448,9 +448,16 @@ func _bot_tick(delta: float) -> void:
 			sprite.play(move_anim)
 
 	# --- 3. Projektilparameter ---
-	var dx: float = target.global_position.x - (global_position.x + cos(deg_to_rad(shoot_angle)) * 20.0)
-	var dy: float = target.global_position.y - (global_position.y + sin(deg_to_rad(shoot_angle)) * 20.0)
 	var weapon = available_weapons[current_weapon_index]
+
+	# Startposition wie beim echten Projektil-Spawn
+	var angle_rad_guess := deg_to_rad(shoot_angle)
+	var muzzle_offset := Vector2.RIGHT.rotated(angle_rad_guess) * 20.0
+	var muzzle_pos := global_position + muzzle_offset
+
+	# Distanz vom Mündungs-Offset zum Ziel
+	var dx: float = target.global_position.x - muzzle_pos.x
+	var dy: float = target.global_position.y - muzzle_pos.y
 
 	var g: float = float(weapon["gravity"]) if weapon.has("gravity") else 1000.0
 	var v_min: float = MIN_SHOOT_FORCE
@@ -463,6 +470,7 @@ func _bot_tick(delta: float) -> void:
 	var chosen_theta := 0.0
 	var chosen_power := 0.6
 
+	# bei großer Distanz lieber hohen Bogen
 	var use_high_arc := dx_total > 700.0
 
 	for p in range(40, 101, 5):
