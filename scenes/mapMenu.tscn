@@ -15,8 +15,8 @@ func _on_continue_pressed() -> void:
 	get_tree().change_scene_to_file(\"res://scenes/gameDay.tscn\")
 
 func _on_exit_pressed() -> void:
-	print(\"Back to menu Pressed!\")
-	get_tree().change_scene_to_file(\"res://scenes/mainMenu.tscn\")
+	print(\"Back to Player decission Pressed!\")
+	get_tree().change_scene_to_file(\"res://scenes/Spielerauswahl.tscn\")
 "
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ues1n"]
@@ -132,6 +132,6 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_ues1n")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_n76px")
 theme_override_styles/hover = SubResource("StyleBoxFlat_h85k7")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_ues1n")
-text = "Back to Menu"
+text = "Back to Player decission"
 
 [connection signal="pressed" from="Background/VBoxContainer/Exit" to="." method="_on_exit_pressed"]

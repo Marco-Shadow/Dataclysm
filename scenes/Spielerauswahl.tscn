@@ -1,0 +1,111 @@
+[gd_scene load_steps=6 format=3 uid="uid://cwl1dcvf4np33"]
+
+[ext_resource type="Script" uid="uid://dpvihk24kmt54" path="res://scenes/spielerauswahl.gd" id="1_3j0wo"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gil70"]
+bg_color = Color(0.96862745, 0.96862745, 0.96862745, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3j0wo"]
+bg_color = Color(0.6509804, 0.6509804, 0.6509804, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p6v4r"]
+bg_color = Color(0.8235294, 0.8, 0.8, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7nib3"]
+
+[node name="Spielerauswahl" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3j0wo")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0.12941177, 0.12941177, 0.12941177, 0.29411766)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Background"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -250.0
+offset_right = 400.0
+offset_bottom = 159.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 25
+
+[node name="Label" type="Label" parent="Background/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Choose a Playmode!"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Background/VBoxContainer"]
+layout_mode = 2
+
+[node name="Exit" type="Button" parent="Background"]
+layout_mode = 0
+offset_left = 178.0
+offset_top = 489.0
+offset_right = 978.0
+offset_bottom = 565.0
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_gil70")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_3j0wo")
+theme_override_styles/hover = SubResource("StyleBoxFlat_p6v4r")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_7nib3")
+text = "Back to Menu"
+
+[node name="PlayerVsCPU" type="Button" parent="Background"]
+layout_mode = 0
+offset_left = 182.0
+offset_top = 227.0
+offset_right = 982.0
+offset_bottom = 303.0
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_gil70")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_3j0wo")
+theme_override_styles/hover = SubResource("StyleBoxFlat_p6v4r")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_7nib3")
+text = "Player vs CPU"
+
+[node name="PlayerVsPlayer" type="Button" parent="Background"]
+layout_mode = 0
+offset_left = 181.0
+offset_top = 323.0
+offset_right = 981.0
+offset_bottom = 399.0
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_gil70")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_3j0wo")
+theme_override_styles/hover = SubResource("StyleBoxFlat_p6v4r")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_7nib3")
+text = "Player vs Player"
+
+[connection signal="pressed" from="Background/Exit" to="." method="_on_exit_pressed"]
+[connection signal="pressed" from="Background/PlayerVsCPU" to="." method="_on_player_vs_cpu_pressed"]
+[connection signal="pressed" from="Background/PlayerVsPlayer" to="." method="_on_player_vs_player_pressed"]

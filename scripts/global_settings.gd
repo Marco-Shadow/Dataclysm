@@ -6,6 +6,9 @@ var config_path: String
 # Map selection
 var selected_map: String = "DAY"
 
+# Bot selection
+var Player2Bot: bool = false
+
 # Gloabl weaponlist => can be called everywhere with globalSettings.available_weapons
 var available_weapons: Array = [
 	{
