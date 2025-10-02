@@ -68,7 +68,7 @@ func _ready() -> void:
 	# Terrain 0.1 Sekunden ignorieren
 	if terrain_node:
 		add_collision_exception_with(terrain_node)
-		await get_tree().create_timer(0.3).timeout
+		await get_tree().create_timer(0.1).timeout
 		remove_collision_exception_with(terrain_node)
 
 func _physics_process(delta: float) -> void:
@@ -79,18 +79,6 @@ func _physics_process(delta: float) -> void:
 	var velocity_magnitude = linear_velocity.length()
 	var rotation_amount = velocity_magnitude * rotation_speed_multiplier * spin_direction * delta
 	rotate(rotation_amount)
-  
-	# --- Bildschirmgrenzen prüfen ---
-	#var viewport_rect = get_viewport().get_visible_rect()
-	
-	# Oben raus -> nichts tun, Projektil soll zurückfallen
-	#if global_position.y < viewport_rect.position.y:
-		#pass
-	# Links / Rechts / Unten raus -> Turn beenden
-	#elif global_position.x < viewport_rect.position.x \
-	#or global_position.x > viewport_rect.position.x + viewport_rect.size.x \
-	#or global_position.y > viewport_rect.position.y + viewport_rect.size.y:
-		#_end_turn_and_free()
 	
 	# Trace-Effekt
 	if enable_trace:
@@ -130,8 +118,6 @@ func calculate_damage() -> float:
 	var t = clamp(impact_speed / max_speed, 0.3, 1.0)  # min 30%
 	var damage = lerp(min_damage, max_damage, t)
 	return max(damage, 0.0)
-
-	return lerp(min_damage, max_damage, t)
 
 # Turn beenden
 func _end_turn_and_free() -> void:
@@ -174,3 +160,21 @@ func _exit_tree() -> void:
 		print("⚠️ Projectile removed unexpectedly, unlocking as fallback")
 		TurnManager.unlock_turn()
 		turn_finished = true
+
+
+func _on_visible_on_screen_notifier_2d_screen_exited() -> void:
+# Kamera holen (hier Beispiel: TurnManager.camera)
+	var cam = TurnManager.camera
+	if cam == null:
+		return
+		
+	# Viewport-Größe in Pixel
+	var viewport_size = get_viewport().get_visible_rect().size
+	# Welt-Koordinaten der Bildschirmränder
+	var half_height = viewport_size.y * 0.5 * cam.zoom.y
+
+	var top = cam.global_position.y - half_height
+	var pos = global_position
+	
+	if not pos.y < top: 
+		queue_free()
