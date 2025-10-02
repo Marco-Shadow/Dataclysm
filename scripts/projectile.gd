@@ -26,7 +26,7 @@ var trace_timer: float = 0.0
 
 # Weapon values (überschrieben vom Player)
 var min_damage: int = 0
-var max_damage: int = 0
+var max_damage: int = 1500
 var initial_speed: float = 0.0
 var gravity: float = 0.0
 
@@ -39,7 +39,7 @@ var turn_finished: bool = false
 # --- Schaden-Delay ---
 @export var damage_activation_delay: float = 0.1  # 0,1 Sekunden
 var damage_timer: float = 0.0
-var damage_active: bool = false
+var damage_active: bool = true
 
 # --- Out-of-bounds Timer (links/rechts raus) ---
 @export var out_of_bounds_lifetime: float = 0.5  # Sekunden
