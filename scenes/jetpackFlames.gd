@@ -20,10 +20,27 @@ func _process(_delta: float) -> void:
 		return
 
 	var my_turn: bool = TurnManager.current_player_id == player.player_id
-	var active: bool = my_turn \
-		and Input.is_action_pressed(action_name) \
-		and player.jetpack_active \
-		and player.velocity.y < -min_upward_speed
+	var active: bool = false
+
+	if player.is_bot:
+		# Bot steuert Jetpack über Logik, nicht über Input
+		active = my_turn and player.jetpack_active and player.velocity.y < -min_upward_speed
+	else:
+		# Spieler braucht zusätzlich den Input
+		active = my_turn \
+			and Input.is_action_pressed(action_name) \
+			and player.jetpack_active \
+			and player.velocity.y < -min_upward_speed
+
+	if active:
+		visible = true
+		if not is_playing():
+			play(String(animation_name))
+	else:
+		if is_playing():
+			stop()
+		visible = false
+		frame = 0
 
 	if active:
 		visible = true
