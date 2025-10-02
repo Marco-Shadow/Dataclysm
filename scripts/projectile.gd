@@ -37,12 +37,12 @@ var velocity: Vector2 = Vector2.ZERO
 var turn_finished: bool = false
 
 # --- Schaden-Delay ---
-@export var damage_activation_delay: float = 0.5  # 0,5 Sekunden
+@export var damage_activation_delay: float = 0.1  # 0,1 Sekunden
 var damage_timer: float = 0.0
 var damage_active: bool = false
 
 # --- Out-of-bounds Timer (links/rechts raus) ---
-@export var out_of_bounds_lifetime: float = 1.5  # Sekunden
+@export var out_of_bounds_lifetime: float = 0.5  # Sekunden
 var out_of_bounds_timer: float = -1.0
 
 func _ready() -> void:
